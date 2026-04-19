@@ -29,20 +29,20 @@ export default function LandingPage() {
             <div className="mt-8 flex flex-wrap gap-3">
               <DemoSheet
                 trigger={
-                  <button className="rounded-[14px] border border-ink bg-ink px-6 py-3.5 text-[15px] font-semibold text-white transition hover:-translate-y-[1px]">
+                  <button className="w-full sm:w-auto rounded-[14px] border border-ink bg-ink px-6 py-3.5 text-[15px] font-semibold text-white transition-all hover:-translate-y-[1px] active:translate-y-0 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2">
                     Try the demo →
                   </button>
                 }
               />
               <Link
                 href="/parent/home"
-                className="rounded-[14px] border border-ink bg-white px-6 py-3.5 text-[15px] font-semibold text-ink transition hover:-translate-y-[1px]"
+                className="w-full sm:w-auto rounded-[14px] border border-ink bg-white px-6 py-3.5 text-center text-[15px] font-semibold text-ink transition-all hover:-translate-y-[1px] hover:bg-panel active:translate-y-0 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
               >
                 Open parent app
               </Link>
               <Link
                 href="/family/home"
-                className="rounded-[14px] border border-ink bg-white px-6 py-3.5 text-[15px] font-semibold text-ink transition hover:-translate-y-[1px]"
+                className="w-full sm:w-auto rounded-[14px] border border-ink bg-white px-6 py-3.5 text-center text-[15px] font-semibold text-ink transition-all hover:-translate-y-[1px] hover:bg-panel active:translate-y-0 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
               >
                 Open family app
               </Link>
@@ -223,23 +223,23 @@ export default function LandingPage() {
           That is exactly what SafeLife is built for.
         </p>
 
-        <div className="mt-10 flex flex-wrap justify-center gap-3">
+        <div className="mx-auto mt-10 grid max-w-[480px] gap-3 sm:flex sm:max-w-none sm:flex-wrap sm:justify-center">
           <DemoSheet
             trigger={
-              <button className="rounded-[14px] bg-white px-6 py-3.5 text-[15px] font-semibold text-ink">
+              <button className="w-full sm:w-auto rounded-[14px] bg-white px-6 py-3.5 text-[15px] font-semibold text-ink transition-all hover:-translate-y-[1px] active:translate-y-0 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-ink">
                 Try the demo →
               </button>
             }
           />
           <Link
             href="/parent/home"
-            className="rounded-[14px] border border-white/40 px-6 py-3.5 text-[15px] font-semibold text-white hover:bg-white/10"
+            className="w-full sm:w-auto rounded-[14px] border border-white/40 px-6 py-3.5 text-center text-[15px] font-semibold text-white transition-all hover:-translate-y-[1px] hover:bg-white/10 active:translate-y-0 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-ink"
           >
             Open parent app
           </Link>
           <Link
             href="/family/home"
-            className="rounded-[14px] border border-white/40 px-6 py-3.5 text-[15px] font-semibold text-white hover:bg-white/10"
+            className="w-full sm:w-auto rounded-[14px] border border-white/40 px-6 py-3.5 text-center text-[15px] font-semibold text-white transition-all hover:-translate-y-[1px] hover:bg-white/10 active:translate-y-0 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-ink"
           >
             Open family app
           </Link>

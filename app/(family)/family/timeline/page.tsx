@@ -2,6 +2,7 @@
 
 import { useMemo } from "react";
 import { AppHeader } from "@/components/app-frame";
+import { EmptyState } from "@/components/empty-state";
 import { FeedCard } from "@/components/feed-card";
 import { useEventsStore } from "@/lib/store/events";
 import { iconForVariant, type MockEvent } from "@/lib/mock-events";
@@ -58,16 +59,11 @@ export default function FamilyTimelinePage() {
           ) : null
         )}
         {events.length === 0 ? (
-          <div className="mt-6 rounded-2xl border border-dashed border-line bg-white p-6 text-center">
-            <div aria-hidden className="text-2xl">📭</div>
-            <p className="mt-2 text-[15px] font-bold text-ink">
-              No events yet
-            </p>
-            <p className="mt-1 text-[13px] leading-snug text-muted">
-              Events show up here as scams get blocked, meds get taken, and
-              help requests come in.
-            </p>
-          </div>
+          <EmptyState
+            emoji="📭"
+            title="No events yet"
+            body="Events show up here as scams get blocked, meds get taken, and help requests come in."
+          />
         ) : null}
       </section>
     </>

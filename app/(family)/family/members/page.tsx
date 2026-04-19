@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { AppHeader } from "@/components/app-frame";
 import { useMembersStore, type Member } from "@/lib/store/members";
+import { useToastsStore } from "@/lib/store/toasts";
 import { cn } from "@/lib/utils";
 
 const HUE_BG: Record<Member["hue"], string> = {
@@ -22,6 +23,7 @@ export default function FamilyMembersPage() {
   const members = useMembersStore((s) => s.members);
   const add = useMembersStore((s) => s.add);
   const remove = useMembersStore((s) => s.remove);
+  const pushToast = useToastsStore((s) => s.push);
   const [name, setName] = useState("");
   const [open, setOpen] = useState(false);
 
@@ -94,17 +96,49 @@ export default function FamilyMembersPage() {
               {m.contact ? (
                 <p className="text-[12px] text-muted">{m.contact}</p>
               ) : null}
+              <div className="mt-2 flex flex-wrap gap-1.5">
+                {m.contact ? (
+                  <a
+                    href={`tel:${m.contact.replace(/\s+/g, "")}`}
+                    onClick={() =>
+                      pushToast({ tone: "info", title: `Calling ${m.name}…` })
+                    }
+                    className="min-h-[36px] rounded-lg border border-line bg-white px-2.5 py-1.5 text-[12px] font-semibold text-ink-2 hover:bg-panel focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent active:scale-[0.98]"
+                  >
+                    📞 Call
+                  </a>
+                ) : null}
+                <button
+                  type="button"
+                  onClick={() =>
+                    pushToast({
+                      tone: "ok",
+                      title: `Message thread with ${m.name}`,
+                      body: "Demo action — opens the family thread in v1.",
+                    })
+                  }
+                  className="min-h-[36px] rounded-lg border border-line bg-white px-2.5 py-1.5 text-[12px] font-semibold text-ink-2 hover:bg-panel focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent active:scale-[0.98]"
+                >
+                  💬 Message
+                </button>
+                {m.role === "Family" ? (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      remove(m.id);
+                      pushToast({
+                        tone: "info",
+                        title: `${m.name} removed from family`,
+                      });
+                    }}
+                    aria-label={`Remove ${m.name}`}
+                    className="min-h-[36px] rounded-lg px-2.5 py-1.5 text-[12px] font-semibold text-muted hover:text-scam-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent active:scale-[0.98]"
+                  >
+                    Remove
+                  </button>
+                ) : null}
+              </div>
             </div>
-            {m.role === "Family" ? (
-              <button
-                type="button"
-                onClick={() => remove(m.id)}
-                aria-label={`Remove ${m.name}`}
-                className="min-h-[40px] rounded-xl border border-line bg-white px-3 py-1.5 text-[12px] font-semibold text-ink-2 hover:bg-panel focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
-              >
-                Remove
-              </button>
-            ) : null}
           </article>
         ))}
 

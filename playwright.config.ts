@@ -23,9 +23,12 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: `next dev -p ${PORT}`,
+    // Use the production build for tests — `next start` serves prebuilt
+    // pages instantly; `next dev` recompiles per-route on cold starts and
+    // can stall on slow disks. CI runs `next build` before this.
+    command: `next start -p ${PORT}`,
     url: `http://localhost:${PORT}`,
     reuseExistingServer: !process.env.CI,
-    timeout: 120_000,
+    timeout: 60_000,
   },
 });

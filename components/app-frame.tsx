@@ -16,7 +16,7 @@ export function AppFrame({
     <div className="min-h-screen bg-panel">
       <div
         className={cn(
-          "mx-auto flex min-h-screen max-w-[440px] flex-col bg-off-white shadow-card md:my-0",
+          "relative mx-auto flex min-h-screen max-w-[440px] flex-col bg-off-white shadow-card md:my-0",
           className
         )}
       >

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useMemo } from "react";
 import { AppHeader } from "@/components/app-frame";
 import { AnomalyCard } from "@/components/anomaly-card";
+import { EmptyState } from "@/components/empty-state";
 import { TrendCard } from "@/components/trend-card";
 import { detect } from "@/lib/anomalies";
 import {
@@ -64,14 +65,11 @@ export default function FamilyInsightsPage() {
           Active alerts
         </h2>
         {anomalies.length === 0 ? (
-          <div className="rounded-2xl border border-dashed border-line bg-white p-6 text-center">
-            <div aria-hidden className="text-2xl">✨</div>
-            <p className="mt-2 text-[15px] font-bold text-ink">All clear</p>
-            <p className="mt-1 text-[13px] leading-snug text-muted">
-              No anomalies detected across connected services. We’ll surface
-              anything worth your attention here.
-            </p>
-          </div>
+          <EmptyState
+            emoji="✨"
+            title="All clear"
+            body="No anomalies detected across connected services. We’ll surface anything worth your attention here."
+          />
         ) : (
           anomalies.map((a) => <AnomalyCard key={a.id} anomaly={a} />)
         )}
@@ -82,15 +80,19 @@ export default function FamilyInsightsPage() {
           7-day trends
         </h2>
         {trends.length === 0 ? (
-          <div className="rounded-2xl border border-dashed border-line bg-white p-6 text-center">
-            <p className="text-[14px] font-bold text-ink">No trends yet</p>
-            <p className="mt-1 text-[13px] leading-snug text-muted">
-              <Link href="/family/connections" className="text-accent underline">
-                Connect a service
-              </Link>{" "}
-              to see daily trends here.
-            </p>
-          </div>
+          <EmptyState
+            emoji="📡"
+            title="No trends yet"
+            body="Connect a health or carrier service to see daily trends here."
+            action={
+              <Link
+                href="/family/connections"
+                className="inline-flex min-h-[40px] items-center rounded-xl border border-ink bg-ink px-3 py-1.5 text-[13px] font-bold text-white hover:-translate-y-[1px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent active:scale-[0.98]"
+              >
+                Connect a service →
+              </Link>
+            }
+          />
         ) : (
           trends.map((t) => <TrendCard key={t.label} {...t} />)
         )}

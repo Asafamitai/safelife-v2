@@ -5,41 +5,40 @@ import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 
 /**
- * Tiny pill at the very top of the phone frame that lets you jump between
- * the Parent and Family apps. Useful for the demo — in shipping clients
- * each user only sees their own side.
+ * Compact persona toggle anchored to the top-right of the in-app phone
+ * frame. Only renders inside /parent/* and /family/*; outside the apps
+ * (landing, /privacy, /terms) it stays hidden.
  */
 export function PersonaSwitch() {
   const pathname = usePathname();
   const isParent = pathname.startsWith("/parent");
   const isFamily = pathname.startsWith("/family");
-
-  // Only show on the in-app routes.
   if (!isParent && !isFamily) return null;
+
+  const otherHref = isParent ? "/family/home" : "/parent/home";
+  const otherLabel = isParent ? "Family view" : "Parent view";
 
   return (
     <div
       role="group"
       aria-label="Demo: switch persona"
-      className="mx-4 mt-3 inline-grid grid-cols-2 gap-1 rounded-full border border-line bg-white p-1 text-[12px] font-bold"
+      className="absolute right-3 top-3 z-20 flex items-center gap-1 rounded-full border border-line bg-white/95 p-0.5 text-[11px] font-bold shadow-card backdrop-blur"
     >
-      <Link
-        href="/parent/home"
+      <span
+        aria-current="page"
         className={cn(
-          "rounded-full px-3 py-1.5 text-center transition-colors",
-          isParent ? "bg-ink text-white" : "text-ink-2 hover:bg-panel"
+          "rounded-full px-2.5 py-1",
+          isParent ? "bg-ink text-white" : "bg-family-bg text-family-ink"
         )}
       >
-        Parent
-      </Link>
+        {isParent ? "Parent" : "Family"}
+      </span>
       <Link
-        href="/family/home"
-        className={cn(
-          "rounded-full px-3 py-1.5 text-center transition-colors",
-          isFamily ? "bg-ink text-white" : "text-ink-2 hover:bg-panel"
-        )}
+        href={otherHref}
+        aria-label={`Switch to ${otherLabel}`}
+        className="rounded-full px-2.5 py-1 text-ink-2 hover:bg-panel focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent active:bg-line"
       >
-        Family
+        ⇄ {isParent ? "Family" : "Parent"}
       </Link>
     </div>
   );

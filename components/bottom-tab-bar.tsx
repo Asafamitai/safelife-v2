@@ -42,11 +42,17 @@ export function BottomTabBar({ tabs, parent = false }: Props) {
             href={t.href}
             aria-current={active ? "page" : undefined}
             className={cn(
-              "flex min-h-[44px] flex-col items-center gap-1 py-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent rounded-lg",
+              "relative flex min-h-[44px] flex-col items-center gap-1 rounded-lg py-1 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent active:bg-panel",
               parent ? "text-[13px]" : "text-[10px]",
-              active ? "font-bold text-ink" : "text-muted"
+              active ? "font-bold text-ink" : "text-muted hover:text-ink-2"
             )}
           >
+            {active ? (
+              <span
+                aria-hidden
+                className="absolute -top-2.5 left-1/2 h-1 w-7 -translate-x-1/2 rounded-full bg-ink"
+              />
+            ) : null}
             <span
               aria-hidden
               className={cn(

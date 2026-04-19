@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useRef, useState } from "react";
 import { useIntegrationsStore } from "@/lib/store/integrations";
 import { useEventsStore } from "@/lib/store/events";
 import { useToastsStore } from "@/lib/store/toasts";
@@ -30,37 +31,61 @@ export function IntegrationCard({
     (s) => s.connected[provider.id]?.connectedAt
   );
 
-  function handleToggle() {
-    if (isConnected) {
-      disconnect(provider.id);
-      prependEvent({
-        id: `int-disc-${provider.id}-${Date.now()}`,
-        variant: "family",
-        tag: "Connection",
-        title: `${provider.name} disconnected`,
-        body: "We’ll stop pulling updates from this service.",
-        time: "Now",
-      });
-      pushToast({
-        tone: "info",
-        title: `${provider.name} disconnected`,
-      });
-    } else {
-      connect(provider.id);
-      prependEvent({
-        id: `int-conn-${provider.id}-${Date.now()}`,
-        variant: "family",
-        tag: "Connection",
-        title: `${provider.name} connected`,
-        body: provider.summary,
-        time: "Now",
-      });
-      pushToast({
-        tone: "ok",
-        title: `${provider.name} connected`,
-        body: provider.summary,
-      });
+  const [confirmingDisconnect, setConfirmingDisconnect] = useState(false);
+  const confirmTimeout = useRef<number | null>(null);
+
+  // Reset the confirm step if the user wanders away.
+  useEffect(() => {
+    return () => {
+      if (confirmTimeout.current) window.clearTimeout(confirmTimeout.current);
+    };
+  }, []);
+
+  function doDisconnect() {
+    disconnect(provider.id);
+    prependEvent({
+      id: `int-disc-${provider.id}-${Date.now()}`,
+      variant: "family",
+      tag: "Connection",
+      title: `${provider.name} disconnected`,
+      body: "We’ll stop pulling updates from this service.",
+      time: "Now",
+    });
+    pushToast({
+      tone: "info",
+      title: `${provider.name} disconnected`,
+    });
+    setConfirmingDisconnect(false);
+  }
+
+  function doConnect() {
+    connect(provider.id);
+    prependEvent({
+      id: `int-conn-${provider.id}-${Date.now()}`,
+      variant: "family",
+      tag: "Connection",
+      title: `${provider.name} connected`,
+      body: provider.summary,
+      time: "Now",
+    });
+    pushToast({
+      tone: "ok",
+      title: `${provider.name} connected`,
+      body: provider.summary,
+    });
+  }
+
+  function handlePrimary() {
+    if (!isConnected) return doConnect();
+    if (confirmingDisconnect) {
+      if (confirmTimeout.current) window.clearTimeout(confirmTimeout.current);
+      return doDisconnect();
     }
+    setConfirmingDisconnect(true);
+    confirmTimeout.current = window.setTimeout(
+      () => setConfirmingDisconnect(false),
+      3500
+    );
   }
 
   return (
@@ -124,17 +149,21 @@ export function IntegrationCard({
 
       <button
         type="button"
-        onClick={handleToggle}
+        onClick={handlePrimary}
         aria-pressed={isConnected}
         aria-label={`${isConnected ? "Disconnect" : "Connect"} ${provider.name}`}
         className={cn(
-          "min-h-[44px] w-full rounded-xl px-3 py-2 text-[14px] font-bold transition-transform hover:-translate-y-[1px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent",
-          isConnected
-            ? "border border-line bg-white text-ink-2 hover:bg-panel"
-            : "border border-ink bg-ink text-white"
+          "min-h-[44px] w-full rounded-xl px-3 py-2 text-[14px] font-bold transition-all hover:-translate-y-[1px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent active:translate-y-0 active:scale-[0.99]",
+          !isConnected && "border border-ink bg-ink text-white active:bg-ink-2",
+          isConnected && !confirmingDisconnect && "border border-line bg-white text-ink-2 hover:bg-panel",
+          isConnected && confirmingDisconnect && "border border-scam-ink bg-scam-bg text-scam-ink"
         )}
       >
-        {isConnected ? "Disconnect" : "Connect"}
+        {!isConnected
+          ? "Connect"
+          : confirmingDisconnect
+            ? "Tap again to disconnect"
+            : "Disconnect"}
       </button>
     </article>
   );

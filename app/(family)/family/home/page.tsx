@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useMemo } from "react";
 import { AppHeader } from "@/components/app-frame";
 import { AnomalyBanner } from "@/components/anomaly-banner";
 import { FeedCard } from "@/components/feed-card";
@@ -12,19 +13,31 @@ import { WeeklyStats } from "@/components/weekly-stats";
 import { useEventsStore } from "@/lib/store/events";
 import { iconForVariant } from "@/lib/mock-events";
 import { useIntegrationsStore } from "@/lib/store/integrations";
-import { useTourStore } from "@/lib/tour";
+import { useMedsStore } from "@/lib/store/meds";
+import { detect } from "@/lib/anomalies";
 
 export default function FamilyHomePage() {
   const events = useEventsStore((s) => s.events);
-  const connectedCount = useIntegrationsStore(
-    (s) => Object.keys(s.connected).length
+  const connectedMap = useIntegrationsStore((s) => s.connected);
+  const meds = useMedsStore((s) => s.meds);
+  const connectedCount = Object.keys(connectedMap).length;
+  // Status pill is a single source of truth: anomalies first, then a feed
+  // signal as a fallback. If neither, "Mom is okay".
+  const anomalies = useMemo(
+    () => detect({ connected: new Set(Object.keys(connectedMap)), meds }),
+    [connectedMap, meds]
   );
-  const stopTour = useTourStore((s) => s.stop);
-
-  // "Mom is okay" until something needs attention.
-  const needsAttention = events.some(
+  const urgentCount = anomalies.filter((a) => a.severity === "urgent").length;
+  const feedScam = events.some(
     (e) => e.variant === "scam" && /suspicious|blocked|scam/i.test(e.title)
   );
+
+  const status =
+    urgentCount > 0
+      ? { tone: "warn" as const, label: `${urgentCount} need${urgentCount === 1 ? "s" : ""} attention` }
+      : feedScam
+        ? { tone: "warn" as const, label: "Worth a look" }
+        : { tone: "ok" as const, label: "Mom is okay" };
 
   const newestId = events[0]?.id;
 
@@ -44,9 +57,7 @@ export default function FamilyHomePage() {
       />
 
       <div className="px-5 pb-3">
-        <StatusPill tone={needsAttention ? "warn" : "ok"}>
-          {needsAttention ? "Needs attention" : "Mom is okay"}
-        </StatusPill>
+        <StatusPill tone={status.tone}>{status.label}</StatusPill>
       </div>
 
       <TourBanner
@@ -55,7 +66,6 @@ export default function FamilyHomePage() {
         total={2}
         title="Here it is — the new event at the top"
         body="That’s the whole loop: parent acts once, family sees it immediately."
-        cta={{ label: "End tour", onClick: stopTour }}
       />
 
       <AnomalyBanner />

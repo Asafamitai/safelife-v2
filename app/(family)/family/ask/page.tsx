@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { AppHeader } from "@/components/app-frame";
+import { EmptyState } from "@/components/empty-state";
 import { useEventsStore } from "@/lib/store/events";
 import { useIntegrationsStore } from "@/lib/store/integrations";
 import { useMedsStore } from "@/lib/store/meds";
@@ -112,15 +113,11 @@ export default function FamilyAskPage() {
         className="flex flex-1 flex-col gap-3 px-4 pb-6"
       >
         {history.length === 0 ? (
-          <div className="rounded-2xl border border-dashed border-line bg-white p-6 text-center">
-            <div aria-hidden className="text-2xl">💬</div>
-            <p className="mt-2 text-[15px] font-bold text-ink">
-              No questions yet
-            </p>
-            <p className="mt-1 text-[13px] leading-snug text-muted">
-              Ask anything above, or tap a suggestion. Answers cite the source.
-            </p>
-          </div>
+          <EmptyState
+            emoji="💬"
+            title="No questions yet"
+            body="Ask anything above, or tap a suggestion. Answers cite the source."
+          />
         ) : (
           history.map((qa) => <QACard key={qa.id} qa={qa} />)
         )}
