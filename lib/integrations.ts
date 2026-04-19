@@ -38,6 +38,11 @@ export interface IntegrationProvider {
   authMethod: string;
   /** Optional logo emoji as a stand-in for a brand mark. */
   emoji?: string;
+  /**
+   * Synthetic data shown when the provider is connected. Two short rows
+   * of label/value. Real connectors fill these from the vendor API.
+   */
+  liveData?: ReadonlyArray<{ label: string; value: string }>;
 }
 
 export const INTEGRATION_CATEGORIES: IntegrationCategory[] = [
@@ -102,6 +107,10 @@ export const INTEGRATION_PROVIDERS: IntegrationProvider[] = [
     summary: "Refill schedule, last pickup, dosage changes.",
     authMethod: "OAuth 2.0",
     emoji: "🏥",
+    liveData: [
+      { label: "Next refill", value: "Apr 28 · Lisinopril" },
+      { label: "Active Rx", value: "2 prescriptions" },
+    ],
   },
   {
     id: "walgreens",
@@ -111,6 +120,9 @@ export const INTEGRATION_PROVIDERS: IntegrationProvider[] = [
     summary: "Refill reminders and prescription transfers.",
     authMethod: "OAuth 2.0",
     emoji: "💊",
+    liveData: [
+      { label: "Last pickup", value: "Apr 12 · Vitamin D" },
+    ],
   },
   {
     id: "rx-mcp",
@@ -131,6 +143,10 @@ export const INTEGRATION_PROVIDERS: IntegrationProvider[] = [
     summary: "Steps, heart rate, sleep, falls (with consent).",
     authMethod: "HealthKit on-device",
     emoji: "🍎",
+    liveData: [
+      { label: "Steps today", value: "4,210" },
+      { label: "Resting HR", value: "68 bpm" },
+    ],
   },
   {
     id: "fitbit",
@@ -140,6 +156,7 @@ export const INTEGRATION_PROVIDERS: IntegrationProvider[] = [
     summary: "Daily activity and resting heart rate trends.",
     authMethod: "OAuth 2.0",
     emoji: "⌚",
+    liveData: [{ label: "Active minutes (7d)", value: "142 min" }],
   },
   {
     id: "withings",
@@ -149,6 +166,10 @@ export const INTEGRATION_PROVIDERS: IntegrationProvider[] = [
     summary: "Blood pressure, weight, and sleep from connected devices.",
     authMethod: "OAuth 2.0",
     emoji: "🩺",
+    liveData: [
+      { label: "Last BP", value: "128 / 82 · This morning" },
+      { label: "Trend (7d)", value: "Stable" },
+    ],
   },
   {
     id: "oura",
@@ -158,6 +179,7 @@ export const INTEGRATION_PROVIDERS: IntegrationProvider[] = [
     summary: "Sleep quality and recovery score.",
     authMethod: "OAuth 2.0",
     emoji: "💍",
+    liveData: [{ label: "Sleep score (last night)", value: "78" }],
   },
 
   // Appointments / records
@@ -169,6 +191,7 @@ export const INTEGRATION_PROVIDERS: IntegrationProvider[] = [
     summary: "Upcoming appointments and reminders.",
     authMethod: "OAuth 2.0",
     emoji: "🗓️",
+    liveData: [{ label: "Next appointment", value: "Tue 10:30 · Dr. Levi" }],
   },
   {
     id: "mychart",
@@ -276,6 +299,10 @@ export const INTEGRATION_PROVIDERS: IntegrationProvider[] = [
     summary: "Carrier-side spam call and SMS detection.",
     authMethod: "API key",
     emoji: "📡",
+    liveData: [
+      { label: "Spam blocked (7d)", value: "23 calls" },
+      { label: "Last block", value: "2h ago" },
+    ],
   },
   {
     id: "tmobile",

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { AppHeader } from "@/components/app-frame";
 import { HelpSheet } from "@/components/help-sheet";
 import { MedCard } from "@/components/med-card";
+import { ParentAskSheet } from "@/components/parent-ask-sheet";
 import { useMedsStore } from "@/lib/store/meds";
 
 export default function ParentHomePage() {
@@ -26,18 +27,27 @@ export default function ParentHomePage() {
 
       <section
         aria-label="I need help"
-        className="px-4 pb-2 pt-3"
+        className="flex flex-col gap-3 px-4 pb-2 pt-3"
       >
         <HelpSheet />
+        <ParentAskSheet />
       </section>
 
       <section
         aria-label="Today’s medications"
         className="flex flex-col gap-3 px-4 pb-3 pt-4"
       >
-        <h2 className="px-1 text-[20px] font-extrabold tracking-tight text-ink">
-          Today’s meds
-        </h2>
+        <div className="flex items-center justify-between gap-3 px-1">
+          <h2 className="text-[20px] font-extrabold tracking-tight text-ink">
+            Today’s meds
+          </h2>
+          <span
+            className="inline-flex items-center gap-1 rounded-full bg-ok-bg px-2.5 py-1 text-[12px] font-bold text-ok-ink"
+            aria-label="7 day streak"
+          >
+            <span aria-hidden>🔥</span> 7 day streak
+          </span>
+        </div>
         {meds.map((m) => (
           <MedCard key={m.id} med={m} />
         ))}

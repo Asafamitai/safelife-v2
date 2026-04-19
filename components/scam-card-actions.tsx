@@ -9,6 +9,7 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import { useEventsStore } from "@/lib/store/events";
+import { useToastsStore } from "@/lib/store/toasts";
 import type { MockEvent } from "@/lib/mock-events";
 
 /**
@@ -20,6 +21,7 @@ export function ScamCardActions({ event }: { event: MockEvent }) {
   const [open, setOpen] = useState(false);
   const dismiss = useEventsStore((s) => s.dismiss);
   const prepend = useEventsStore((s) => s.prepend);
+  const pushToast = useToastsStore((s) => s.push);
 
   function handleMarkSafe() {
     dismiss(event.id);
@@ -31,6 +33,7 @@ export function ScamCardActions({ event }: { event: MockEvent }) {
       body: "Reviewed and dismissed — no action needed.",
       time: "Now",
     });
+    pushToast({ tone: "ok", title: "Marked safe" });
   }
 
   return (

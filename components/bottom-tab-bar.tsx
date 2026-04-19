@@ -16,13 +16,23 @@ interface Props {
   parent?: boolean;
 }
 
+const COLS: Record<number, string> = {
+  3: "grid-cols-3",
+  4: "grid-cols-4",
+  5: "grid-cols-5",
+};
+
 export function BottomTabBar({ tabs, parent = false }: Props) {
   const pathname = usePathname();
+  const cols = COLS[tabs.length] ?? "grid-cols-4";
 
   return (
     <nav
       aria-label="Primary"
-      className="grid grid-cols-4 gap-1 border-t border-line bg-white px-4 pb-5 pt-2.5"
+      className={cn(
+        "grid gap-1 border-t border-line bg-white px-4 pb-5 pt-2.5",
+        cols
+      )}
     >
       {tabs.map((t) => {
         const active = pathname === t.href || pathname.startsWith(t.href + "/");

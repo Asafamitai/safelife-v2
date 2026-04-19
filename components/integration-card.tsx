@@ -2,6 +2,7 @@
 
 import { useIntegrationsStore } from "@/lib/store/integrations";
 import { useEventsStore } from "@/lib/store/events";
+import { useToastsStore } from "@/lib/store/toasts";
 import type { IntegrationProvider } from "@/lib/integrations";
 import { cn } from "@/lib/utils";
 
@@ -24,6 +25,7 @@ export function IntegrationCard({
   const connect = useIntegrationsStore((s) => s.connect);
   const disconnect = useIntegrationsStore((s) => s.disconnect);
   const prependEvent = useEventsStore((s) => s.prepend);
+  const pushToast = useToastsStore((s) => s.push);
   const connectedAt = useIntegrationsStore(
     (s) => s.connected[provider.id]?.connectedAt
   );
@@ -39,6 +41,10 @@ export function IntegrationCard({
         body: "We’ll stop pulling updates from this service.",
         time: "Now",
       });
+      pushToast({
+        tone: "info",
+        title: `${provider.name} disconnected`,
+      });
     } else {
       connect(provider.id);
       prependEvent({
@@ -48,6 +54,11 @@ export function IntegrationCard({
         title: `${provider.name} connected`,
         body: provider.summary,
         time: "Now",
+      });
+      pushToast({
+        tone: "ok",
+        title: `${provider.name} connected`,
+        body: provider.summary,
       });
     }
   }
@@ -96,6 +107,20 @@ export function IntegrationCard({
           </p>
         </div>
       </div>
+
+      {isConnected && provider.liveData?.length ? (
+        <dl className="rounded-xl bg-panel p-3">
+          {provider.liveData.map((row) => (
+            <div
+              key={row.label}
+              className="flex items-baseline justify-between gap-3 py-0.5 first:pt-0 last:pb-0"
+            >
+              <dt className="text-[12px] text-muted">{row.label}</dt>
+              <dd className="text-[13px] font-bold text-ink">{row.value}</dd>
+            </div>
+          ))}
+        </dl>
+      ) : null}
 
       <button
         type="button"

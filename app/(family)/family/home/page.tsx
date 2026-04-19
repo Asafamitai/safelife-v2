@@ -2,11 +2,13 @@
 
 import Link from "next/link";
 import { AppHeader } from "@/components/app-frame";
+import { AnomalyBanner } from "@/components/anomaly-banner";
 import { FeedCard } from "@/components/feed-card";
 import { StatusPill } from "@/components/status-pill";
 import { CheckMessageSheet } from "@/components/check-message-sheet";
 import { ScamCardActions } from "@/components/scam-card-actions";
 import { TourBanner } from "@/components/tour-banner";
+import { WeeklyStats } from "@/components/weekly-stats";
 import { useEventsStore } from "@/lib/store/events";
 import { iconForVariant } from "@/lib/mock-events";
 import { useIntegrationsStore } from "@/lib/store/integrations";
@@ -55,6 +57,26 @@ export default function FamilyHomePage() {
         body="That’s the whole loop: parent acts once, family sees it immediately."
         cta={{ label: "End tour", onClick: stopTour }}
       />
+
+      <AnomalyBanner />
+
+      <WeeklyStats />
+
+      <Link
+        href="/family/ask"
+        className="mx-4 mt-3 flex items-center gap-3 rounded-2xl border border-accent/30 bg-chip-blue p-4 transition-transform hover:-translate-y-[1px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+      >
+        <span aria-hidden className="text-[22px]">💬</span>
+        <span className="flex flex-1 flex-col">
+          <span className="text-[14px] font-bold text-ink">
+            Ask anything about your parent
+          </span>
+          <span className="text-[12px] leading-snug text-ink-2">
+            “Did dad take his meds today?” “Any scams blocked this week?”
+          </span>
+        </span>
+        <span aria-hidden className="text-accent text-lg">→</span>
+      </Link>
 
       <section
         aria-label="Today"

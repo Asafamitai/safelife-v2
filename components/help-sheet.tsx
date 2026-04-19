@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/sheet";
 import { BigCTA } from "@/components/big-cta";
 import { useEventsStore } from "@/lib/store/events";
+import { useToastsStore } from "@/lib/store/toasts";
 import type { CategoryVariant } from "@/components/category-tag";
 
 interface HelpRoute {
@@ -72,6 +73,7 @@ const ROUTES: HelpRoute[] = [
 export function HelpSheet() {
   const [open, setOpen] = useState(false);
   const prepend = useEventsStore((s) => s.prepend);
+  const pushToast = useToastsStore((s) => s.push);
 
   function pickRoute(route: HelpRoute) {
     prepend({
@@ -81,6 +83,11 @@ export function HelpSheet() {
       title: route.feedTitle,
       body: route.feedBody,
       time: "Now",
+    });
+    pushToast({
+      tone: "ok",
+      title: "Help is on the way",
+      body: "Your family was notified just now.",
     });
     setOpen(false);
   }

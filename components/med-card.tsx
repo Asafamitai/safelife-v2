@@ -2,6 +2,7 @@
 
 import { useEventsStore } from "@/lib/store/events";
 import { useMedsStore, type Med } from "@/lib/store/meds";
+import { useToastsStore } from "@/lib/store/toasts";
 import { CategoryTag } from "@/components/category-tag";
 
 /**
@@ -11,6 +12,7 @@ import { CategoryTag } from "@/components/category-tag";
 export function MedCard({ med }: { med: Med }) {
   const confirm = useMedsStore((s) => s.confirm);
   const prepend = useEventsStore((s) => s.prepend);
+  const pushToast = useToastsStore((s) => s.push);
   const taken = !!med.takenAt;
 
   function onConfirm() {
@@ -26,6 +28,11 @@ export function MedCard({ med }: { med: Med }) {
       title: `${med.schedule} meds — done`,
       body: `${med.name} ${med.dose} marked as taken at ${stamp}.`,
       time: stamp,
+    });
+    pushToast({
+      tone: "ok",
+      title: "Nice work",
+      body: `${med.name} marked as taken.`,
     });
   }
 

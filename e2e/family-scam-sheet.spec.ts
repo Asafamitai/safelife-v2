@@ -4,7 +4,7 @@ test("family member can open the scam-check review sheet", async ({ page }) => {
   await page.goto("/family/home");
 
   // The feed should render with at least one card.
-  await expect(page.getByText("Today")).toBeVisible();
+  await expect(page.getByText("Today", { exact: true })).toBeVisible();
 
   // Open the bottom sheet.
   await page.getByRole("button", { name: /check a message now/i }).click();
