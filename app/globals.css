@@ -1,0 +1,47 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    font-family: var(--font-sans, "Inter"), system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    @apply bg-off-white text-ink;
+  }
+}
+
+/* Landing page gradient background */
+.bg-hero-gradient {
+  background:
+    radial-gradient(
+      1200px 800px at 80% -10%,
+      #eaf2ff 0%,
+      #f4f6fb 45%,
+      #f4f6fb 100%
+    );
+}
+
+/* Tiny signal bars used inside the phone status bar */
+.signal-bars span {
+  display: inline-block;
+  width: 3px;
+  background: #2b2e38;
+  border-radius: 1px;
+  margin-right: 2px;
+}
+.signal-bars span:nth-child(1) {
+  height: 4px;
+}
+.signal-bars span:nth-child(2) {
+  height: 6px;
+}
+.signal-bars span:nth-child(3) {
+  height: 8px;
+}
+.signal-bars span:nth-child(4) {
+  height: 10px;
+}

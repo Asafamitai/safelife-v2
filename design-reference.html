@@ -1,0 +1,473 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>SafeLife — App Mockup</title>
+<style>
+  :root {
+    --bg: #F4F6FB;
+    --bg-2: #EAEEF7;
+    --ink: #0A0A0F;
+    --ink-2: #2B2E38;
+    --muted: #6B7280;
+    --line: #E6E9F0;
+    --card: #FFFFFF;
+
+    --red-bg: #FEECEC;
+    --red-ink: #B42318;
+    --blue-bg: #E8F0FE;
+    --blue-ink: #1D4FD8;
+    --purple-bg: #EFE9FE;
+    --purple-ink: #5B2BD9;
+    --green-bg: #D8F5E3;
+    --green-ink: #0B7A3B;
+    --amber-bg: #FFF2D6;
+    --amber-ink: #8A5A00;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI",
+                 "Helvetica Neue", Arial, sans-serif;
+    background: radial-gradient(1200px 800px at 80% -10%, #EAF2FF 0%, #F4F6FB 45%, #F4F6FB 100%);
+    color: var(--ink);
+    min-height: 100vh;
+    padding: 56px 24px 80px;
+    display: flex;
+    justify-content: center;
+  }
+
+  .stage {
+    width: 100%;
+    max-width: 1280px;
+    display: grid;
+    grid-template-columns: 1.05fr 1fr;
+    gap: 64px;
+    align-items: center;
+  }
+
+  /* Left column (brand + context) */
+  .brand-pill {
+    display: inline-block;
+    font-size: 13px;
+    font-weight: 600;
+    color: #1357D3;
+    background: #E8F0FE;
+    padding: 7px 14px;
+    border-radius: 999px;
+    letter-spacing: .02em;
+  }
+  h1.hero {
+    font-size: 64px;
+    font-weight: 800;
+    line-height: 1.02;
+    letter-spacing: -0.02em;
+    margin: 22px 0 22px;
+  }
+  p.sub {
+    font-size: 18px;
+    line-height: 1.5;
+    color: var(--ink-2);
+    max-width: 520px;
+    margin: 0 0 32px;
+  }
+  .cta-row { display: flex; gap: 12px; margin-bottom: 34px; }
+  .cta {
+    padding: 14px 22px;
+    border-radius: 14px;
+    border: 1px solid var(--ink);
+    font-weight: 600;
+    font-size: 15px;
+    cursor: pointer;
+    transition: transform .08s ease;
+  }
+  .cta:hover { transform: translateY(-1px); }
+  .cta.primary { background: var(--ink); color: #fff; }
+  .cta.ghost { background: #fff; color: var(--ink); }
+
+  .stat-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; max-width: 520px; }
+  .stat {
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 14px 16px;
+  }
+  .stat .n { font-size: 22px; font-weight: 800; letter-spacing: -0.02em; }
+  .stat .l { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+  /* Phone mockup */
+  .phone-wrap {
+    position: relative;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+  .phone {
+    position: relative;
+    width: 380px;
+    height: 780px;
+    background: #0A0A0F;
+    border-radius: 54px;
+    padding: 14px;
+    box-shadow:
+      0 40px 80px -20px rgba(15, 23, 42, 0.35),
+      0 8px 20px -6px rgba(15, 23, 42, 0.15);
+  }
+  .screen {
+    width: 100%; height: 100%;
+    background: #FBFBFD;
+    border-radius: 42px;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Status bar */
+  .status {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 26px 4px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink);
+  }
+  .status .icons { display: flex; gap: 6px; align-items: center; color: var(--ink-2); }
+  .dot { width: 4px; height: 4px; background: var(--ink-2); border-radius: 50%; }
+
+  /* Notch */
+  .notch {
+    position: absolute;
+    top: 18px; left: 50%;
+    transform: translateX(-50%);
+    width: 120px; height: 28px;
+    background: #0A0A0F;
+    border-radius: 999px;
+    z-index: 2;
+  }
+
+  /* App header */
+  .app-header {
+    padding: 12px 22px 6px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .brand { display: flex; align-items: center; gap: 10px; }
+  .logo {
+    width: 30px; height: 30px; border-radius: 9px;
+    background: linear-gradient(135deg, #0A0A0F 0%, #2B2E38 100%);
+    display: grid; place-items: center;
+    color: #fff; font-size: 15px; font-weight: 800;
+    letter-spacing: -0.02em;
+  }
+  .brand .name { font-weight: 700; letter-spacing: -0.01em; }
+  .avatar {
+    width: 34px; height: 34px; border-radius: 50%;
+    background: linear-gradient(135deg, #FAD0C4, #FFD1FF);
+    display: grid; place-items: center;
+    font-weight: 700; font-size: 13px; color: #5B2BD9;
+  }
+
+  /* Greeting */
+  .greeting {
+    padding: 6px 22px 10px;
+  }
+  .greeting h2 {
+    font-size: 22px;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+    font-weight: 800;
+    margin: 2px 0 2px;
+  }
+  .greeting .sub2 { font-size: 13px; color: var(--muted); }
+
+  .pill-status {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--green-bg);
+    color: var(--green-ink);
+    border-radius: 999px;
+    padding: 6px 12px;
+    font-size: 12px;
+    font-weight: 700;
+    margin-top: 10px;
+  }
+  .pill-status::before {
+    content: ""; width: 7px; height: 7px; border-radius: 50%; background: #0B7A3B;
+  }
+
+  /* Feed */
+  .feed {
+    padding: 10px 16px 10px;
+    display: flex; flex-direction: column; gap: 10px;
+    overflow-y: auto;
+    flex: 1;
+  }
+  .feed-label {
+    font-size: 11px; color: var(--muted); font-weight: 700;
+    letter-spacing: .12em; text-transform: uppercase;
+    padding: 2px 6px 2px;
+  }
+  .card {
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 14px 14px 14px;
+    display: grid;
+    grid-template-columns: 36px 1fr auto;
+    gap: 10px;
+    align-items: start;
+  }
+  .card.tinted { border: 1px solid transparent; }
+  .card.scam { background: var(--red-bg); }
+  .card.med  { background: var(--blue-bg); }
+  .card.fam  { background: var(--purple-bg); }
+  .card.ride { background: var(--amber-bg); }
+
+  .tag {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    margin-bottom: 2px;
+  }
+  .scam .tag { color: var(--red-ink); }
+  .med  .tag { color: var(--blue-ink); }
+  .fam  .tag { color: var(--purple-ink); }
+  .ride .tag { color: var(--amber-ink); }
+
+  .icon {
+    width: 36px; height: 36px;
+    border-radius: 10px;
+    display: grid; place-items: center;
+    background: #fff;
+    font-size: 18px;
+  }
+  .scam .icon { box-shadow: 0 0 0 1px rgba(180,35,24,0.15); }
+  .med .icon  { box-shadow: 0 0 0 1px rgba(29,79,216,0.15); }
+  .fam .icon  { box-shadow: 0 0 0 1px rgba(91,43,217,0.15); }
+  .ride .icon { box-shadow: 0 0 0 1px rgba(138,90,0,0.15); }
+
+  .card .title { font-size: 14px; font-weight: 700; margin-bottom: 3px; color: var(--ink); }
+  .card .body  { font-size: 13px; line-height: 1.35; color: var(--ink-2); }
+  .card .time  { font-size: 11px; color: var(--muted); white-space: nowrap; padding-top: 2px; }
+  .card .actions {
+    grid-column: 2 / span 2;
+    margin-top: 10px;
+    display: flex; gap: 8px;
+  }
+  .btn-sm {
+    font-size: 12px; font-weight: 700;
+    padding: 8px 12px;
+    border-radius: 10px;
+    border: 1px solid rgba(10,10,15,0.12);
+    background: rgba(255,255,255,0.7);
+    color: var(--ink);
+    cursor: pointer;
+  }
+  .btn-sm.solid { background: var(--ink); color: #fff; border-color: var(--ink); }
+
+  /* Footer / main CTA + tabbar */
+  .bottom-cta {
+    padding: 8px 16px 10px;
+  }
+  .big-btn {
+    width: 100%;
+    background: var(--ink);
+    color: #fff;
+    border: none;
+    border-radius: 16px;
+    padding: 15px 18px;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    cursor: pointer;
+  }
+  .tabbar {
+    border-top: 1px solid var(--line);
+    background: #fff;
+    padding: 10px 18px 20px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 4px;
+  }
+  .tab {
+    display: flex; flex-direction: column; align-items: center;
+    font-size: 10px; color: var(--muted); gap: 4px;
+    padding: 4px 0;
+  }
+  .tab .dot-lg {
+    width: 22px; height: 22px; border-radius: 8px;
+    display: grid; place-items: center; font-size: 14px;
+  }
+  .tab.active { color: var(--ink); font-weight: 700; }
+  .tab.active .dot-lg { background: #EEF2FF; }
+
+  /* Floating annotations */
+  .annot {
+    position: absolute;
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 12px 14px;
+    font-size: 12px;
+    line-height: 1.35;
+    color: var(--ink-2);
+    max-width: 200px;
+    box-shadow: 0 10px 24px -10px rgba(15,23,42,0.25);
+  }
+  .annot .k {
+    font-size: 10px; letter-spacing: .14em; text-transform: uppercase;
+    color: var(--muted); font-weight: 700; margin-bottom: 4px;
+  }
+  .annot.tl { top: 60px; left: -60px; }
+  .annot.br { bottom: 40px; right: -60px; }
+
+  @media (max-width: 1020px) {
+    .stage { grid-template-columns: 1fr; gap: 48px; }
+    h1.hero { font-size: 44px; }
+    .annot.tl, .annot.br { display: none; }
+  }
+
+  /* Small dot grid status icons */
+  .bars { display: inline-flex; gap: 2px; align-items: end; }
+  .bars span { width: 3px; background: var(--ink-2); border-radius: 1px; }
+  .bars span:nth-child(1) { height: 4px; }
+  .bars span:nth-child(2) { height: 6px; }
+  .bars span:nth-child(3) { height: 8px; }
+  .bars span:nth-child(4) { height: 10px; }
+</style>
+</head>
+<body>
+  <main class="stage">
+    <section class="left">
+      <span class="brand-pill">Trusted support for aging parents</span>
+      <h1 class="hero">Make sure your parents are safe — without checking on them all day.</h1>
+      <p class="sub">SafeLife helps aging parents avoid scams, manage daily tasks, and get help fast — while giving families peace of mind.</p>
+
+      <div class="cta-row">
+        <button class="cta primary">Join the waitlist</button>
+        <button class="cta ghost">See how it works</button>
+      </div>
+
+      <div class="stat-row">
+        <div class="stat"><div class="n">1 tap</div><div class="l">to get help</div></div>
+        <div class="stat"><div class="n">24/7</div><div class="l">scam check support</div></div>
+        <div class="stat"><div class="n">1 app</div><div class="l">for the whole family</div></div>
+      </div>
+    </section>
+
+    <section class="right">
+      <div class="phone-wrap">
+        <div class="annot tl">
+          <div class="k">For families</div>
+          Get alerts only when something matters.
+        </div>
+
+        <div class="phone">
+          <div class="notch"></div>
+          <div class="screen">
+            <div class="status">
+              <span>9:41</span>
+              <span class="icons">
+                <span class="bars"><span></span><span></span><span></span><span></span></span>
+                <span style="font-size:11px;font-weight:700;">5G</span>
+                <span style="font-weight:700;">100%</span>
+              </span>
+            </div>
+
+            <div class="app-header">
+              <div class="brand">
+                <div class="logo">S</div>
+                <div>
+                  <div class="name">SafeLife</div>
+                  <div style="font-size:11px;color:var(--muted);">Family hub</div>
+                </div>
+              </div>
+              <div class="avatar">MA</div>
+            </div>
+
+            <div class="greeting">
+              <div class="sub2">Good morning, Maya</div>
+              <h2>Mom's day so far</h2>
+              <span class="pill-status">Mom is okay</span>
+            </div>
+
+            <div class="feed">
+              <div class="feed-label">Today</div>
+
+              <div class="card tinted scam">
+                <div class="icon" aria-hidden="true">🛡️</div>
+                <div>
+                  <div class="tag">Scam check</div>
+                  <div class="title">Suspicious text blocked</div>
+                  <div class="body">"This text asking for bank info looks suspicious. Do not click the link."</div>
+                  <div class="actions">
+                    <button class="btn-sm solid">Review</button>
+                    <button class="btn-sm">Mark safe</button>
+                  </div>
+                </div>
+                <div class="time">Now</div>
+              </div>
+
+              <div class="card tinted med">
+                <div class="icon" aria-hidden="true">💊</div>
+                <div>
+                  <div class="tag">Medication reminder</div>
+                  <div class="title">Morning meds — done</div>
+                  <div class="body">Blood pressure medication marked as taken at 8:00 AM.</div>
+                </div>
+                <div class="time">8:02</div>
+              </div>
+
+              <div class="card tinted fam">
+                <div class="icon" aria-hidden="true">📅</div>
+                <div>
+                  <div class="tag">Family update</div>
+                  <div class="title">Doctor tomorrow, 10:30 AM</div>
+                  <div class="body">Ride support booked. Dad will be notified 30 min before.</div>
+                </div>
+                <div class="time">Tue</div>
+              </div>
+
+              <div class="card tinted ride">
+                <div class="icon" aria-hidden="true">🚕</div>
+                <div>
+                  <div class="tag">Help in one tap</div>
+                  <div class="title">Mom asked for a ride home</div>
+                  <div class="body">Pickup at Dr. Levi's clinic in 12 min. Cost covered by you.</div>
+                  <div class="actions">
+                    <button class="btn-sm solid">Confirm</button>
+                    <button class="btn-sm">Reassign</button>
+                  </div>
+                </div>
+                <div class="time">11:24</div>
+              </div>
+            </div>
+
+            <div class="bottom-cta">
+              <button class="big-btn">Check a message now →</button>
+            </div>
+
+            <div class="tabbar">
+              <div class="tab active"><div class="dot-lg">🏠</div>Home</div>
+              <div class="tab"><div class="dot-lg">🛡️</div>Scam</div>
+              <div class="tab"><div class="dot-lg">💊</div>Routines</div>
+              <div class="tab"><div class="dot-lg">👨‍👩‍👧</div>Family</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="annot br">
+          <div class="k">For parents</div>
+          Simple, voice-friendly help without learning new tech.
+        </div>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
