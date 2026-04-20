@@ -1,3 +1,54 @@
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
+The product and visual spec is preserved verbatim in **Part B** below — read it in full before making design or copy changes. Part A is the engineering layer that emerged after M1–M5 landed and the Ask/Insights/integrations work on `feat/insights-ask-and-depth`.
+
+---
+
+## Part A — Engineering notes
+
+### Commands
+
+- `npm run dev` — Next.js dev server (port 3000 by default).
+- `npm run build` / `npm start` — production build / serve.
+- `npm run lint` — `next lint`.
+- `npm run test:e2e` — Playwright suite. **Important:** `playwright.config.ts` launches `next start -p 3100`, so you must `npm run build` first (CI does this). `next dev` is deliberately not used here because cold-start recompiles stall the tests.
+- `npm run test:e2e:install` — one-time Chromium install for Playwright. Both projects (`chromium-mobile` = Pixel 7, `chromium-desktop`) share the Chromium binary.
+- Run a single spec: `npx playwright test e2e/parent-confirm-med.spec.ts` (add `--project=chromium-desktop` to pick one device).
+
+No backend. No auth. Anything that looks like a service (scam classifier, anomaly detector, ask parser, integrations catalog) is an in-repo pure module — see "Swappable logic seams" below.
+
+### Architecture
+
+**App Router with two personas as route groups.** `app/(parent)/` and `app/(family)/` each have their own `layout.tsx` that wraps children in `AppFrame` + `PersonaSwitch` + a persona-specific `BottomTabBar`. The parent layout adds `text-[18px]` — the "1 step larger" rule from Part B §5 is enforced here, not per-component. The marketing landing page lives at `app/page.tsx` (no group) and is the 1:1 mirror of `design-reference.html`.
+
+**State is Zustand stores in `lib/store/`**, one per domain (`events`, `meds`, `members`, `integrations`, `toasts`). The events store seeds itself from `lib/mock-events.ts` and is the single source of truth for the family feed — scam-check completion in M4 prepends into this store so the family side sees it live. Do not read `MOCK_EVENTS` directly from a component; go through `useEventsStore`.
+
+**Swappable logic seams.** Four modules are written as pure functions with a stable input/output contract so a real backend or Claude API call can drop in without touching the UI:
+
+- `lib/scam-heuristics.ts` — `classifyMessage(text) → ScamResult`. Rule-based for v1; server-side model later.
+- `lib/anomalies.ts` — `detect({ connected, meds, events, members }) → Anomaly[]`. Rules read from the stores + `lib/timeseries.ts`.
+- `lib/ask-parser.ts` — `answer(question, snapshot) → AskResult`. v1 is intent classification; the contract is explicitly the boundary a Claude API call slides into.
+- `lib/integrations.ts` — static catalog of MCP/API providers. No OAuth is wired; connect/disconnect flips local state and drops a soft note in the feed.
+
+When extending any of these, keep the function signature stable and add behavior behind it — the UI is wired to the contract, not the implementation.
+
+**Components split into primitives vs. domain cards.** `components/ui/` holds the two shadcn-style primitives actually in use (`button.tsx`, `sheet.tsx`) — this is not a full shadcn install, add primitives manually when needed. Everything else in `components/` is domain-aware (`feed-card`, `scam-card-actions`, `anomaly-card`, `med-card`, `ask-parser`-backed sheets, etc.) and reads from the Zustand stores directly.
+
+**Theme tokens are the contract between Part B §5 and the code.** They live in `tailwind.config.ts` as named colors (`ink`, `scam.bg`, `med.ink`, etc.). Never hardcode hex in components — if a token is missing, add it to the config and reference it.
+
+**Path alias:** `@/*` → repo root (`tsconfig.json`). Use `@/components/...`, `@/lib/...` everywhere.
+
+### Testing conventions
+
+- Playwright specs assert behavior the product promises, not implementation details — e.g. `parent-confirm-med.spec.ts` checks the 44pt tap-target guardrail from Part B §9, and `parent-a11y.spec.ts` uses `@axe-core/playwright` to fail on any WCAG AA color-contrast violation on parent routes. When you add a parent-side screen, add it to the `PARENT_ROUTES` array in that spec.
+- No unit test runner is configured. Logic in `lib/*.ts` is exercised through Playwright today; if you add heavy pure logic, prefer adding a minimal runner rather than folding it into e2e.
+
+---
+
+## Part B — Product & Build Spec (original, authoritative)
+
 # SafeLife — Product & Build Spec
 
 This file is the single source of truth for Claude Code. Read it fully before you

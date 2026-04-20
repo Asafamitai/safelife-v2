@@ -123,7 +123,7 @@ export const PhoneFrame: FC = () => (
           <FeedCard
             variant="ride"
             tag="Help in one tap"
-            title="Mom asked for a ride home"
+            title="Ride home — confirmed"
             body="Pickup at Dr. Levi's clinic in 12 min. Cost covered by you."
             time="11:24"
             icon={<span aria-hidden>🚕</span>}
