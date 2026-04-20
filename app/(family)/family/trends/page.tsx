@@ -203,7 +203,9 @@ export default function FamilyTrendsPage() {
                 <LegendSwatch label="Avg" color="#B42318" />
                 <LegendSwatch label="Peak" color="#B42318" dashed />
               </>
-            ) : metric === "activity" ? (
+            ) : metric === "sleep" ? (
+              <LegendSwatch label="Hours slept" colorClass="bg-family-ink" />
+            ) : (
               <>
                 <LegendSwatch label="Steps" colorClass="bg-accent" />
                 <LegendSwatch
@@ -211,7 +213,7 @@ export default function FamilyTrendsPage() {
                   colorClass="bg-accent opacity-25"
                 />
               </>
-            ) : null}
+            )}
           </div>
         </div>
       </section>

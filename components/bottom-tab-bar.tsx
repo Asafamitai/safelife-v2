@@ -64,7 +64,7 @@ export function BottomTabBar({ tabs, parent = false }: Props) {
             >
               {t.icon}
             </span>
-            {t.label}
+            <span className="whitespace-nowrap">{t.label}</span>
           </Link>
         );
       })}

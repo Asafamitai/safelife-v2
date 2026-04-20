@@ -55,7 +55,7 @@ const SEED: Med[] = [
     remindersOn: true,
     // Seeded as already taken today so the adherence card has something
     // to celebrate on first render.
-    takenAt: "8:02",
+    takenAt: "8:02 AM",
   },
   {
     id: "med-2",
@@ -68,7 +68,7 @@ const SEED: Med[] = [
     times: ["12:30"],
     days: ALL_WEEK,
     remindersOn: true,
-    takenAt: "12:35",
+    takenAt: "12:35 PM",
   },
   {
     id: "med-3",
