@@ -13,6 +13,7 @@ import type { Med } from "./store/meds";
 import type { Member } from "./store/members";
 import type { IntegrationProvider } from "./integrations";
 import { detect } from "./anomalies";
+import { TIMESERIES, average, latest } from "./timeseries";
 
 export type AskIntent =
   | "scams"
@@ -97,6 +98,30 @@ export function answer(question: string, snap: AskSnapshot): AskResult {
 
     case "meds": {
       const m = fmtMeds(snap.meds);
+      // Prefer measured adherence from a smart bottle when connected — it's
+      // more reliable than self-reported taps.
+      const smartBottle = snap.connected.has("pillsy")
+        ? "pillsy"
+        : snap.connected.has("adheretech")
+          ? "adheretech"
+          : null;
+      if (smartBottle) {
+        const series = TIMESERIES[smartBottle].adherencePct ?? [];
+        const last = latest(series);
+        const baseline = average(series.slice(0, -1));
+        return {
+          intent,
+          headline:
+            last != null
+              ? `Measured adherence: ${last}% this week.`
+              : "Measured adherence unavailable.",
+          bullets: [
+            ...m.list,
+            `Baseline (6-day avg): ${baseline.toFixed(0)}%`,
+          ],
+          sources: [smartBottle === "pillsy" ? "Pillsy" : "AdhereTech"],
+        };
+      }
       return {
         intent,
         headline:

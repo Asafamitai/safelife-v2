@@ -62,7 +62,7 @@ export default function FamilyAskPage() {
       <AppHeader subtitle="Family hub" title="Ask anything" />
 
       <p className="px-5 pb-2 text-[15px] leading-snug text-ink-2">
-        Free-text questions about your parent. Answers come from the family
+        Free-text questions about your loved one. Answers come from the
         feed, meds, vitals, and connected services.
       </p>
 

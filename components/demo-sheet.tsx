@@ -15,12 +15,19 @@ import {
 import { useTourStore } from "@/lib/tour";
 import { cn } from "@/lib/utils";
 
+/**
+ * Audience labels match the product positioning:
+ *   "you"   — the adult child / caregiver using the dashboard
+ *   "loved" — the older person using the simple app
+ */
+type Audience = "you" | "loved";
+
 interface DemoFlow {
   href: string;
   emoji: string;
   title: string;
   blurb: string;
-  audience: "Family" | "Parent";
+  audience: Audience;
   recommended?: boolean;
 }
 
@@ -28,9 +35,9 @@ const FLOWS: DemoFlow[] = [
   {
     href: "/family/home",
     emoji: "🏠",
-    title: "Family home",
+    title: "Your home",
     blurb: "The calm feed. Right alerts at the right time.",
-    audience: "Family",
+    audience: "you",
     recommended: true,
   },
   {
@@ -38,21 +45,21 @@ const FLOWS: DemoFlow[] = [
     emoji: "🔌",
     title: "Connect data",
     blurb: "Pharmacies, health, fraud alerts — opt-in per service.",
-    audience: "Family",
+    audience: "you",
   },
   {
     href: "/family/timeline",
     emoji: "🗓️",
     title: "Timeline",
     blurb: "This week in one quiet list.",
-    audience: "Family",
+    audience: "you",
   },
   {
     href: "/parent/home",
     emoji: "👋",
-    title: "Parent home",
+    title: "Their home",
     blurb: "Large type, one help button, today’s meds. Built for 65+.",
-    audience: "Parent",
+    audience: "loved",
     recommended: true,
   },
   {
@@ -60,18 +67,18 @@ const FLOWS: DemoFlow[] = [
     emoji: "🛡️",
     title: "Scam check",
     blurb: "Paste any text. We rate it safe, suspicious, or scam.",
-    audience: "Parent",
+    audience: "loved",
   },
   {
     href: "/parent/help",
     emoji: "🤝",
     title: "Help history",
     blurb: "What was asked for and where it was routed.",
-    audience: "Parent",
+    audience: "loved",
   },
 ];
 
-type PersonaFilter = "all" | "Family" | "Parent";
+type PersonaFilter = "all" | Audience;
 
 export function DemoSheet({ trigger }: { trigger: React.ReactNode }) {
   const [persona, setPersona] = useState<PersonaFilter>("all");
@@ -114,8 +121,8 @@ export function DemoSheet({ trigger }: { trigger: React.ReactNode }) {
                 See the end-to-end flow
               </h3>
               <p className="mt-1 text-[13px] leading-snug text-white/80">
-                Parent blocks a scam → it lands in the family feed, instantly.
-                Two taps, no setup.
+                Your loved one blocks a scam → it lands in your feed,
+                instantly. Two taps, no setup.
               </p>
             </div>
           </div>
@@ -139,8 +146,8 @@ export function DemoSheet({ trigger }: { trigger: React.ReactNode }) {
           {(
             [
               { id: "all" as const, label: "All screens" },
-              { id: "Family" as const, label: "For families" },
-              { id: "Parent" as const, label: "For parents" },
+              { id: "you" as const, label: "For you" },
+              { id: "loved" as const, label: "For your loved one" },
             ]
           ).map((p) => (
             <button
@@ -184,12 +191,12 @@ export function DemoSheet({ trigger }: { trigger: React.ReactNode }) {
                       </span>
                       <span
                         className={
-                          f.audience === "Parent"
+                          f.audience === "loved"
                             ? "rounded-full bg-ride-bg px-2 py-0.5 text-[10px] font-bold uppercase tracking-[0.06em] text-ride-ink"
                             : "rounded-full bg-family-bg px-2 py-0.5 text-[10px] font-bold uppercase tracking-[0.06em] text-family-ink"
                         }
                       >
-                        {f.audience}
+                        {f.audience === "loved" ? "Loved one" : "You"}
                       </span>
                       {f.recommended ? (
                         <span className="rounded-full bg-chip-blue px-2 py-0.5 text-[10px] font-bold uppercase tracking-[0.06em] text-accent">

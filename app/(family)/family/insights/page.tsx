@@ -168,6 +168,21 @@ function buildTrends(connected: Set<string>): TrendInput[] {
     }
   }
 
+  if (connected.has("pillsy") || connected.has("adheretech")) {
+    const provider = connected.has("pillsy") ? "pillsy" : "adheretech";
+    const series = TIMESERIES[provider].adherencePct ?? [];
+    if (series.length) {
+      out.push({
+        label: "Med adherence",
+        value: `${latest(series)}%`,
+        series,
+        delta: deltaVsBaseline(series),
+        source: provider === "pillsy" ? "Pillsy" : "AdhereTech",
+        tone: "med",
+      });
+    }
+  }
+
   if (connected.has("verizon") || connected.has("tmobile")) {
     const provider = connected.has("verizon") ? "verizon" : "tmobile";
     const series = TIMESERIES[provider].spamCalls ?? [];

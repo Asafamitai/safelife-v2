@@ -51,8 +51,8 @@ export function CheckMessageSheet() {
         </div>
 
         <p className="mt-5 text-[13px] leading-snug text-muted">
-          Tip: you can also auto-forward suspicious texts from your parent&apos;s
-          phone — turn it on in Settings later.
+          Tip: you can also auto-forward suspicious texts from their phone —
+          turn it on in Settings later.
         </p>
       </SheetContent>
     </Sheet>

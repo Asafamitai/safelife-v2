@@ -35,16 +35,16 @@ export default function LandingPage() {
                 }
               />
               <Link
-                href="/parent/home"
-                className="w-full sm:w-auto rounded-[14px] border border-ink bg-white px-6 py-3.5 text-center text-[15px] font-semibold text-ink transition-all hover:-translate-y-[1px] hover:bg-panel active:translate-y-0 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
-              >
-                Open parent app
-              </Link>
-              <Link
                 href="/family/home"
                 className="w-full sm:w-auto rounded-[14px] border border-ink bg-white px-6 py-3.5 text-center text-[15px] font-semibold text-ink transition-all hover:-translate-y-[1px] hover:bg-panel active:translate-y-0 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
               >
-                Open family app
+                Your app
+              </Link>
+              <Link
+                href="/parent/home"
+                className="w-full sm:w-auto rounded-[14px] border border-ink bg-white px-6 py-3.5 text-center text-[15px] font-semibold text-ink transition-all hover:-translate-y-[1px] hover:bg-panel active:translate-y-0 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
+              >
+                Their app
               </Link>
             </div>
 
@@ -178,24 +178,24 @@ export default function LandingPage() {
          ====================================================================== */}
       <section className="bg-panel px-6 py-20">
         <div className="mx-auto grid max-w-[1160px] gap-5 md:grid-cols-3">
-          <div className="rounded-2xl bg-ink p-8 text-white">
-            <div className="text-[13px] text-white/60">For parents</div>
-            <h3 className="mt-2 text-[28px] font-extrabold tracking-tight">
-              Stay independent
-            </h3>
-            <p className="mt-4 text-[15px] leading-[1.5] text-white/80">
-              Get simple support for daily life without needing to master
-              another complicated app.
-            </p>
-          </div>
           <div className="rounded-2xl border border-line bg-white p-8">
-            <div className="text-[13px] text-muted">For families</div>
+            <div className="text-[13px] text-muted">For you</div>
             <h3 className="mt-2 text-[28px] font-extrabold tracking-tight text-ink">
               Worry less
             </h3>
             <p className="mt-4 text-[15px] leading-[1.5] text-ink-2">
               Know when something matters, protect against common risks, and
               feel connected without checking in all day.
+            </p>
+          </div>
+          <div className="rounded-2xl bg-ink p-8 text-white">
+            <div className="text-[13px] text-white/60">For your loved one</div>
+            <h3 className="mt-2 text-[28px] font-extrabold tracking-tight">
+              Stay independent
+            </h3>
+            <p className="mt-4 text-[15px] leading-[1.5] text-white/80">
+              Simple support for daily life without needing to master another
+              complicated app.
             </p>
           </div>
           <div className="rounded-2xl bg-chip-blue p-8">
@@ -232,16 +232,16 @@ export default function LandingPage() {
             }
           />
           <Link
-            href="/parent/home"
-            className="w-full sm:w-auto rounded-[14px] border border-white/40 px-6 py-3.5 text-center text-[15px] font-semibold text-white transition-all hover:-translate-y-[1px] hover:bg-white/10 active:translate-y-0 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-ink"
-          >
-            Open parent app
-          </Link>
-          <Link
             href="/family/home"
             className="w-full sm:w-auto rounded-[14px] border border-white/40 px-6 py-3.5 text-center text-[15px] font-semibold text-white transition-all hover:-translate-y-[1px] hover:bg-white/10 active:translate-y-0 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-ink"
           >
-            Open family app
+            Your app
+          </Link>
+          <Link
+            href="/parent/home"
+            className="w-full sm:w-auto rounded-[14px] border border-white/40 px-6 py-3.5 text-center text-[15px] font-semibold text-white transition-all hover:-translate-y-[1px] hover:bg-white/10 active:translate-y-0 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-ink"
+          >
+            Their app
           </Link>
         </div>
       </section>

@@ -11,12 +11,12 @@ import { cn } from "@/lib/utils";
  */
 export function PersonaSwitch() {
   const pathname = usePathname();
-  const isParent = pathname.startsWith("/parent");
-  const isFamily = pathname.startsWith("/family");
-  if (!isParent && !isFamily) return null;
+  const isLovedOne = pathname.startsWith("/parent");
+  const isYou = pathname.startsWith("/family");
+  if (!isLovedOne && !isYou) return null;
 
-  const otherHref = isParent ? "/family/home" : "/parent/home";
-  const otherLabel = isParent ? "Family view" : "Parent view";
+  const otherHref = isLovedOne ? "/family/home" : "/parent/home";
+  const otherLabel = isLovedOne ? "your view" : "their view";
 
   return (
     <div
@@ -28,17 +28,17 @@ export function PersonaSwitch() {
         aria-current="page"
         className={cn(
           "rounded-full px-2.5 py-1",
-          isParent ? "bg-ink text-white" : "bg-family-bg text-family-ink"
+          isLovedOne ? "bg-ride-bg text-ride-ink" : "bg-family-bg text-family-ink"
         )}
       >
-        {isParent ? "Parent" : "Family"}
+        {isLovedOne ? "Their app" : "Your app"}
       </span>
       <Link
         href={otherHref}
         aria-label={`Switch to ${otherLabel}`}
         className="rounded-full px-2.5 py-1 text-ink-2 hover:bg-panel focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent active:bg-line"
       >
-        ⇄ {isParent ? "Family" : "Parent"}
+        ⇄ {isLovedOne ? "Yours" : "Theirs"}
       </Link>
     </div>
   );

@@ -23,6 +23,8 @@ export interface ProviderSeries {
   sleepScore?: number[];
   /** Verizon / T-Mobile. Daily spam-call count. */
   spamCalls?: number[];
+  /** Pillsy / AdhereTech. Daily measured adherence %, 0-100. */
+  adherencePct?: number[];
 }
 
 /**
@@ -59,6 +61,15 @@ export const TIMESERIES: Record<string, ProviderSeries> = {
   },
   tmobile: {
     spamCalls: [1, 2, 1, 3, 4, 8, 15],
+  },
+  // Consumer smart bottle — declining trend so the anomaly detector has
+  // something concrete to flag for the demo.
+  pillsy: {
+    adherencePct: [95, 92, 86, 90, 86, 79, 71],
+  },
+  // Clinical-grade bottle — stable trend. Shown as a foil to Pillsy.
+  adheretech: {
+    adherencePct: [98, 96, 94, 95, 92, 90, 92],
   },
 };
 

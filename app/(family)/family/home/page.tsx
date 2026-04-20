@@ -65,7 +65,7 @@ export default function FamilyHomePage() {
         step={1}
         total={2}
         title="Here it is — the new event at the top"
-        body="That’s the whole loop: parent acts once, family sees it immediately."
+        body="That’s the whole loop: they act once, you see it immediately."
       />
 
       <AnomalyBanner />
@@ -79,7 +79,7 @@ export default function FamilyHomePage() {
         <span aria-hidden className="text-[22px]">💬</span>
         <span className="flex flex-1 flex-col">
           <span className="text-[14px] font-bold text-ink">
-            Ask anything about your parent
+            Ask anything about your loved one
           </span>
           <span className="text-[12px] leading-snug text-ink-2">
             “Did dad take his meds today?” “Any scams blocked this week?”

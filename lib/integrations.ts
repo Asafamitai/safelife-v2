@@ -51,7 +51,7 @@ export const INTEGRATION_CATEGORIES: IntegrationCategory[] = [
     label: "Pharmacies",
     emoji: "💊",
     blurb:
-      "Pull refill schedules and dose info so meds reminders match what was actually picked up.",
+      "Pull refill schedules and real adherence signals so meds reminders match what was actually picked up and taken.",
   },
   {
     id: "health",
@@ -132,6 +132,34 @@ export const INTEGRATION_PROVIDERS: IntegrationProvider[] = [
     summary: "Generic Rx MCP server for local pharmacies that expose one.",
     authMethod: "MCP server",
     emoji: "🧪",
+  },
+  {
+    id: "adheretech",
+    category: "pharmacy",
+    name: "AdhereTech Aidia",
+    kind: "api",
+    summary:
+      "Aidia cellular smart bottle — opens reported in real time, adherence reports for clinicians.",
+    authMethod: "Clinical API",
+    emoji: "💊",
+    liveData: [
+      { label: "Adherence (7d)", value: "92%" },
+      { label: "Missed dose", value: "None this week" },
+    ],
+  },
+  {
+    id: "pillsy",
+    category: "pharmacy",
+    name: "Pillsy",
+    kind: "api",
+    summary: "Smart bottle tracks opens and compares them to the schedule.",
+    authMethod: "OAuth 2.0",
+    emoji: "🫙",
+    liveData: [
+      { label: "Adherence (7d)", value: "86%" },
+      { label: "Last open", value: "8:12 AM" },
+      { label: "Late doses (7d)", value: "3" },
+    ],
   },
 
   // Health monitoring

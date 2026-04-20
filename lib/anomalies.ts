@@ -128,6 +128,47 @@ function spamRule(connected: Set<string>): Anomaly | null {
   return null;
 }
 
+function adherenceRule(connected: Set<string>): Anomaly | null {
+  // Pillsy is the consumer-facing bottle — prefer it for the household
+  // view when both providers are connected.
+  const provider = connected.has("pillsy")
+    ? "pillsy"
+    : connected.has("adheretech")
+      ? "adheretech"
+      : null;
+  if (!provider) return null;
+  const series = TIMESERIES[provider].adherencePct;
+  if (!series?.length) return null;
+  const last = latest(series)!;
+  const trend = deltaVsBaseline(series);
+  const source = provider === "pillsy" ? "Pillsy" : "AdhereTech";
+
+  if (last < 75) {
+    return {
+      id: `adherence-low-${provider}`,
+      severity: "urgent",
+      title: `Adherence dropped to ${last}% this week`,
+      body:
+        trend < -5
+          ? `Down ${Math.abs(trend).toFixed(0)}% vs the 6-day baseline. Bottle opens are getting missed.`
+          : "Latest week is below the 75% adherence floor.",
+      sources: [source],
+      action: "Remind dad",
+    };
+  }
+  if (trend < -10) {
+    return {
+      id: `adherence-trend-${provider}`,
+      severity: "warn",
+      title: "Adherence trending down",
+      body: `Down ${Math.abs(trend).toFixed(0)}% over the last 7 days (latest ${last}%).`,
+      sources: [source],
+      action: "Remind dad",
+    };
+  }
+  return null;
+}
+
 function medsRule({ meds }: DetectInput): Anomaly | null {
   // Dose is "missed" in the demo if we're past noon and the morning dose
   // hasn't been confirmed. Simple heuristic — production would use real times.
@@ -153,6 +194,7 @@ export function detect(input: DetectInput): Anomaly[] {
     sleepRule(input.connected),
     stepsRule(input.connected),
     spamRule(input.connected),
+    adherenceRule(input.connected),
     medsRule(input),
   ];
   return rules
