@@ -38,6 +38,8 @@ When extending any of these, keep the function signature stable and add behavior
 
 **Theme tokens are the contract between Part B §5 and the code.** They live in `tailwind.config.ts` as named colors (`ink`, `scam.bg`, `med.ink`, etc.). Never hardcode hex in components — if a token is missing, add it to the config and reference it.
 
+**User-facing labels diverged from internal names.** The product surfaces are now **"Protection"** (umbrella) and **"Daily flow"** — but internal identifiers kept the old shorthand for continuity: the route is still `/parent/scam`, the token group is still `scam-bg/scam-ink` / `med-bg/med-ink`, the pure module is still `lib/scam-heuristics.ts`, the `CategoryVariant` literal is still `"scam"` / `"med"`. When adding new code, match the internal convention; when adding new copy, use the product labels.
+
 **Path alias:** `@/*` → repo root (`tsconfig.json`). Use `@/components/...`, `@/lib/...` everywhere.
 
 ### Testing conventions
@@ -86,13 +88,15 @@ all day."*
 
 ## 3. Core features (v1 scope)
 
-1. **Scam Shield** — Paste/forward a suspicious text, email, or link. SafeLife
-   rates it (safe / suspicious / clearly a scam) and explains why in one
-   sentence. Offers "block" and "mark safe." Optional auto-forward from the
-   parent's phone.
-2. **Medication Reminders** — Simple prompts at set times. Big tap target to
-   confirm. Missed doses surface to the family feed (not as an alert — as a
-   soft note).
+1. **Protection layer** — Paste/forward a suspicious text, email, or link.
+   SafeLife rates it (safe / suspicious / clearly a scam) and explains why in
+   one sentence. Offers "block" and "mark safe." Optional auto-forward from
+   the loved one's phone. Positioning note: SafeLife is a layer on top of
+   existing tools (carrier filters, TrueCaller, Aura, etc.) — not a standalone
+   fraud service.
+2. **Daily flow** — Simple prompts at set times for medication, routines, and
+   recurring tasks. Big tap target to confirm. Missed items surface to the
+   family feed as soft notes, not alerts.
 3. **Help in One Tap** — A single "I need help" button on the parent home
    screen that opens a short menu: *ride, appointment, message someone,
    tech help*. Each routes to a family member or a pre-approved service.
@@ -111,7 +115,7 @@ Home
  ├── Status ("You're all set today")
  ├── Big CTA: "I need help"  →  Help sheet (Ride / Appt / Message / Tech)
  ├── Today's meds  (tap to confirm)
- └── Scam checker  (paste or forward)
+ └── Protection checker  (paste or forward)
 
 Help history   Settings (font size, voice, family)
 ```
@@ -120,7 +124,7 @@ Help history   Settings (font size, voice, family)
 ```
 Home (today feed)
  ├── Pill: "Mom is okay" / "Needs attention"
- ├── Feed cards: Scam check, Medication, Family update, Ride/help
+ ├── Feed cards: Protection, Daily flow, Family update, Ride/help
  └── CTA: "Check a message now"
 
 Timeline   Members   Settings
@@ -142,8 +146,8 @@ Keep it close to the mockup. Do NOT generate a new theme.
 | `off-white` | `#FBFBFD` | App canvas |
 | `accent` | `#1357D3` | Links, category headers |
 | `chip-blue` | `#E8F0FE` | Info tints |
-| `red-bg / red-ink` | `#FEECEC` / `#B42318` | Scam |
-| `blue-bg / blue-ink` | `#E8F0FE` / `#1D4FD8` | Medication |
+| `red-bg / red-ink` | `#FEECEC` / `#B42318` | Protection (scam variant) |
+| `blue-bg / blue-ink` | `#E8F0FE` / `#1D4FD8` | Daily flow (med variant) |
 | `purple-bg / purple-ink` | `#EFE9FE` / `#5B2BD9` | Family update |
 | `green-bg / green-ink` | `#D8F5E3` / `#0B7A3B` | OK status |
 | `amber-bg / amber-ink` | `#FFF2D6` / `#8A5A00` | One-tap help |
@@ -212,7 +216,7 @@ safelife/
    variants; "Check a message now" CTA opens a placeholder sheet.
 3. **M3 — Parent home**: Large-type version; "I need help" sheet with 4 routes;
    medication card with confirm interaction.
-4. **M4 — Scam check flow**: Paste/forward flow, rule-based rating, add an
+4. **M4 — Protection flow**: Paste/forward flow, rule-based rating, add an
    entry to the family feed when blocked.
 5. **M5 — Polish & e2e**: Playwright tests for the two happy paths; a11y pass
    (min contrast AA, tap targets ≥ 44pt on parent app).

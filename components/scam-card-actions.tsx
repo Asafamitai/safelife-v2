@@ -28,7 +28,7 @@ export function ScamCardActions({ event }: { event: MockEvent }) {
     prepend({
       id: `scam-safe-${event.id}-${Date.now()}`,
       variant: "ok",
-      tag: "Scam check",
+      tag: "Protection",
       title: "Marked safe by family",
       body: "Reviewed and dismissed — no action needed.",
       time: "Now",

@@ -79,7 +79,7 @@ export const PhoneFrame: FC = () => (
 
           <FeedCard
             variant="scam"
-            tag="Scam check"
+            tag="Protection"
             title="Suspicious text blocked"
             body={`"This text asking for bank info looks suspicious. Do not click the link."`}
             time="Now"
@@ -104,7 +104,7 @@ export const PhoneFrame: FC = () => (
 
           <FeedCard
             variant="med"
-            tag="Medication reminder"
+            tag="Daily flow"
             title="Morning meds — done"
             body="Blood pressure medication marked as taken at 8:00 AM."
             time="8:02"

@@ -12,7 +12,7 @@ export default function ParentLayout({ children }: { children: ReactNode }) {
         parent
         tabs={[
           { href: "/parent/home", label: "Home", icon: "🏠" },
-          { href: "/parent/scam", label: "Scam check", icon: "🛡️" },
+          { href: "/parent/scam", label: "Protection", icon: "🛡️" },
           { href: "/parent/help", label: "Help", icon: "🤝" },
           { href: "/parent/settings", label: "Settings", icon: "⚙️" },
         ]}

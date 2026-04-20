@@ -24,7 +24,7 @@ export function MedCard({ med }: { med: Med }) {
     prepend({
       id: `med-${med.id}-${Date.now()}`,
       variant: "med",
-      tag: "Medication reminder",
+      tag: "Daily flow",
       title: `${med.schedule} meds — done`,
       body: `${med.name} ${med.dose} marked as taken at ${stamp}.`,
       time: stamp,

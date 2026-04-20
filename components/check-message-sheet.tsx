@@ -39,7 +39,7 @@ export function CheckMessageSheet() {
 
         <div className="mt-5 grid gap-3">
           <Button asChild size="lg" variant="primary">
-            <Link href="/parent/scam">Open scam checker</Link>
+            <Link href="/parent/scam">Open protection checker</Link>
           </Button>
           <Button
             size="lg"

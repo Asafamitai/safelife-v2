@@ -57,7 +57,7 @@ export default function ParentScamPage() {
     prepend({
       id: `scam-${Date.now()}`,
       variant: "scam",
-      tag: "Scam check",
+      tag: "Protection",
       title: "Suspicious message blocked",
       body: snippet ? `“${snippet}${text.length > 120 ? "…" : ""}”` : undefined,
       time: "Now",
@@ -75,7 +75,7 @@ export default function ParentScamPage() {
     prepend({
       id: `scam-safe-${Date.now()}`,
       variant: "ok",
-      tag: "Scam check",
+      tag: "Protection",
       title: "Message marked safe",
       body: "Reviewed and dismissed.",
       time: "Now",
@@ -87,7 +87,7 @@ export default function ParentScamPage() {
     <>
       <AppHeader
         parent
-        subtitle="Scam Shield"
+        subtitle="Protection layer"
         title="Check a message"
       />
 

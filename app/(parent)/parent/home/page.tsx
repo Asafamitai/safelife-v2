@@ -54,7 +54,7 @@ export default function ParentHomePage() {
       </section>
 
       <section
-        aria-label="Scam check entry"
+        aria-label="Protection entry"
         className="px-4 pb-6 pt-3"
       >
         <Link

@@ -84,15 +84,15 @@ export function answer(question: string, snap: AskSnapshot): AskResult {
       if (blocked.length === 0) {
         return {
           intent,
-          headline: "No scams blocked yet — Scam Shield is on.",
-          sources: ["Scam check feed"],
+          headline: "No scams blocked yet — Protection layer is on.",
+          sources: ["Protection feed"],
         };
       }
       return {
         intent,
         headline: `${blocked.length} message${blocked.length === 1 ? "" : "s"} blocked recently.`,
         bullets: blocked.slice(0, 3).map((e) => `${e.time ?? ""} · ${e.title}`),
-        sources: ["Scam check feed"],
+        sources: ["Protection feed"],
       };
     }
 

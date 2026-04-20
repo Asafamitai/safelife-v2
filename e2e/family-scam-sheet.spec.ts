@@ -11,7 +11,7 @@ test("family member can open the scam-check review sheet", async ({ page }) => {
 
   // Sheet content should be visible with the title and primary action.
   await expect(page.getByRole("heading", { name: /check a message/i })).toBeVisible();
-  await expect(page.getByRole("link", { name: /open scam checker/i })).toBeVisible();
+  await expect(page.getByRole("link", { name: /open protection checker/i })).toBeVisible();
 
   // Closing the sheet hides the title.
   await page.getByRole("button", { name: /not now/i }).click();

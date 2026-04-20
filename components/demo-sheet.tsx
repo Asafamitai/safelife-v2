@@ -65,7 +65,7 @@ const FLOWS: DemoFlow[] = [
   {
     href: "/parent/scam",
     emoji: "🛡️",
-    title: "Scam check",
+    title: "Protection",
     blurb: "Paste any text. We rate it safe, suspicious, or scam.",
     audience: "loved",
   },

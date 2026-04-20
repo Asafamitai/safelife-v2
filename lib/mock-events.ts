@@ -27,7 +27,7 @@ export const MOCK_EVENTS: MockEvent[] = [
   {
     id: "evt-1",
     variant: "scam",
-    tag: "Scam check",
+    tag: "Protection",
     title: "Suspicious text blocked",
     body: `"This text asking for bank info looks suspicious. Do not click the link."`,
     time: "Now",
@@ -35,7 +35,7 @@ export const MOCK_EVENTS: MockEvent[] = [
   {
     id: "evt-2",
     variant: "med",
-    tag: "Medication reminder",
+    tag: "Daily flow",
     title: "Morning meds — done",
     body: "Blood pressure medication marked as taken at 8:00 AM.",
     time: "8:02",
