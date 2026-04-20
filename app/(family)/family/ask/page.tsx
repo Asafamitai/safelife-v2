@@ -8,17 +8,19 @@ import { useIntegrationsStore } from "@/lib/store/integrations";
 import { useMedsStore } from "@/lib/store/meds";
 import { useMembersStore } from "@/lib/store/members";
 import {
-  answer,
+  answerAsync,
   SUGGESTIONS,
-  type AskResult,
+  type AskResultWithSource,
 } from "@/lib/ask-parser";
 import { INTEGRATION_PROVIDERS } from "@/lib/integrations";
 import { cn } from "@/lib/utils";
+import { ClaudeStatusPill } from "@/components/claude-status-pill";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface QA {
   id: string;
   question: string;
-  result: AskResult;
+  result: AskResultWithSource | null;
 }
 
 export default function FamilyAskPage() {
@@ -41,15 +43,14 @@ export default function FamilyAskPage() {
     [events, meds, members, connected]
   );
 
-  function ask(q: string) {
+  async function ask(q: string) {
     const trimmed = q.trim();
     if (!trimmed) return;
-    const result = answer(trimmed, snapshot);
-    setHistory((h) => [
-      { id: `qa-${Date.now()}`, question: trimmed, result },
-      ...h,
-    ]);
+    const id = `qa-${Date.now()}`;
+    setHistory((h) => [{ id, question: trimmed, result: null }, ...h]);
     setText("");
+    const result = await answerAsync(trimmed, snapshot);
+    setHistory((h) => h.map((qa) => (qa.id === id ? { ...qa, result } : qa)));
   }
 
   function handleSubmit(e: React.FormEvent) {
@@ -127,40 +128,52 @@ export default function FamilyAskPage() {
 }
 
 function QACard({ qa }: { qa: QA }) {
-  const isUnknown = qa.result.intent === "unknown";
+  const isPending = qa.result === null;
+  const isUnknown = qa.result?.intent === "unknown";
 
   return (
     <article className="flex flex-col gap-2.5">
       <div className="self-end max-w-[85%] rounded-2xl rounded-br-md bg-ink px-4 py-3 text-[14px] font-semibold leading-snug text-white">
         {qa.question}
       </div>
-      <div
-        className={cn(
-          "max-w-[90%] self-start rounded-2xl rounded-bl-md p-4",
-          isUnknown ? "bg-panel" : "bg-chip-blue"
-        )}
-      >
-        <p
+      {isPending ? (
+        <div className="max-w-[90%] self-start rounded-2xl rounded-bl-md bg-panel p-4">
+          <Skeleton className="h-[18px] w-3/4" />
+          <Skeleton className="mt-2 h-[14px] w-full" />
+          <Skeleton className="mt-1 h-[14px] w-5/6" />
+        </div>
+      ) : (
+        <div
           className={cn(
-            "text-[15px] font-bold leading-snug",
-            isUnknown ? "text-ink-2" : "text-ink"
+            "max-w-[90%] self-start rounded-2xl rounded-bl-md p-4",
+            isUnknown ? "bg-panel" : "bg-chip-blue"
           )}
         >
-          {qa.result.headline}
-        </p>
-        {qa.result.bullets?.length ? (
-          <ul className="mt-2 grid gap-1 text-[13px] leading-snug text-ink-2">
-            {qa.result.bullets.map((b, i) => (
-              <li key={i}>· {b}</li>
-            ))}
-          </ul>
-        ) : null}
-        {qa.result.sources?.length ? (
-          <p className="mt-3 text-[11px] uppercase tracking-[0.08em] text-muted">
-            Source: {qa.result.sources.join(" · ")}
+          <p
+            className={cn(
+              "text-[15px] font-bold leading-snug",
+              isUnknown ? "text-ink-2" : "text-ink"
+            )}
+          >
+            {qa.result!.headline}
           </p>
-        ) : null}
-      </div>
+          {qa.result!.bullets?.length ? (
+            <ul className="mt-2 grid gap-1 text-[13px] leading-snug text-ink-2">
+              {qa.result!.bullets.map((b, i) => (
+                <li key={i}>· {b}</li>
+              ))}
+            </ul>
+          ) : null}
+          <div className="mt-3 flex flex-wrap items-center gap-2">
+            <ClaudeStatusPill source={qa.result!.source} />
+            {qa.result!.sources?.length ? (
+              <p className="text-[11px] uppercase tracking-[0.08em] text-muted">
+                Source: {qa.result!.sources.join(" · ")}
+              </p>
+            ) : null}
+          </div>
+        </div>
+      )}
     </article>
   );
 }

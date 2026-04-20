@@ -14,6 +14,8 @@ import type { Member } from "./store/members";
 import type { IntegrationProvider } from "./integrations";
 import { detect } from "./anomalies";
 import { TIMESERIES, average, latest } from "./timeseries";
+import { callClaudeTool, ClaudeUnavailableError } from "./claude";
+import { ASK_SYSTEM_PROMPT, ASK_TOOL } from "./claude-prompts";
 
 export type AskIntent =
   | "scams"
@@ -263,6 +265,129 @@ export function answer(question: string, snap: AskSnapshot): AskResult {
         headline:
           "I’m not sure yet. Try asking about meds, scams, help requests, vitals, or appointments.",
       };
+  }
+}
+
+/**
+ * The `source` field on `AskResult` tells the UI whether this answer came
+ * from Claude (live) or the rule-based fallback. `fallback-*` reasons are
+ * useful for debugging in the console but never surfaced to the user.
+ */
+export type AskSource =
+  | "claude"
+  | "fallback-no-key"
+  | "fallback-error"
+  | "fallback-rules";
+
+export interface AskResultWithSource extends AskResult {
+  source: AskSource;
+}
+
+/**
+ * Build a compact JSON string of the snapshot to pass as the user message.
+ * Keep it lean — only the fields the model actually needs to answer.
+ */
+function snapshotToJson(snap: AskSnapshot): string {
+  const connectedList = Array.from(snap.connected);
+  const anomalies = detect({ connected: snap.connected, meds: snap.meds });
+  return JSON.stringify(
+    {
+      events: snap.events.map((e) => ({
+        variant: e.variant,
+        tag: e.tag,
+        title: e.title,
+        body: e.body,
+        time: e.time,
+      })),
+      meds: snap.meds.map((m) => ({
+        name: m.name,
+        dose: m.dose,
+        takeAt: m.takeAt,
+        takenAt: m.takenAt ?? null,
+      })),
+      members: snap.members.map((m) => ({ name: m.name, role: m.role })),
+      connected: connectedList,
+      providers: snap.providers
+        .filter((p) => snap.connected.has(p.id))
+        .map((p) => ({
+          id: p.id,
+          name: p.name,
+          kind: p.kind,
+          liveData: p.liveData,
+        })),
+      anomalies: anomalies.map((a) => ({
+        id: a.id,
+        title: a.title,
+        severity: a.severity,
+      })),
+    },
+    null,
+    0
+  );
+}
+
+function parseAskTool(input: unknown): AskResult {
+  if (typeof input !== "object" || input === null)
+    throw new Error("not-object");
+  const o = input as Record<string, unknown>;
+  if (typeof o.intent !== "string") throw new Error("intent");
+  if (typeof o.headline !== "string") throw new Error("headline");
+  return {
+    intent: o.intent as AskIntent,
+    headline: o.headline,
+    bullets: Array.isArray(o.bullets)
+      ? o.bullets.filter((b): b is string => typeof b === "string")
+      : undefined,
+    sources: Array.isArray(o.sources)
+      ? o.sources.filter((s): s is string => typeof s === "string")
+      : undefined,
+  };
+}
+
+/**
+ * Try Claude first; fall back to the rules-based `answer()` on any
+ * failure. Never throws — every code path produces a valid `AskResult`.
+ * The `source` field tells the UI which path we took.
+ */
+export async function answerAsync(
+  question: string,
+  snap: AskSnapshot
+): Promise<AskResultWithSource> {
+  const localIntent = classify(question);
+  const localFallback = (source: AskSource): AskResultWithSource => ({
+    ...answer(question, snap),
+    source,
+  });
+
+  try {
+    const user = [
+      `Question: ${question}`,
+      `Local intent guess (hint, not authoritative): ${localIntent}`,
+      `Snapshot:`,
+      snapshotToJson(snap),
+    ].join("\n");
+
+    const result = await callClaudeTool<AskResult>({
+      system: ASK_SYSTEM_PROMPT,
+      user,
+      tool: ASK_TOOL as unknown as Parameters<
+        typeof callClaudeTool<AskResult>
+      >[0]["tool"],
+      parse: parseAskTool,
+      max_tokens: 800,
+    });
+    return { ...result, source: "claude" };
+  } catch (err) {
+    if (
+      err instanceof ClaudeUnavailableError &&
+      err.reason === "no-key"
+    ) {
+      return localFallback("fallback-no-key");
+    }
+    if (typeof console !== "undefined" && err instanceof Error) {
+      console.warn("[claude/ask] fallback:", err.message);
+    }
+    return localFallback("fallback-error");
   }
 }
 

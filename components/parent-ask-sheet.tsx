@@ -11,9 +11,11 @@ import {
 } from "@/components/ui/sheet";
 import { BigCTA } from "@/components/big-cta";
 import {
-  answer,
-  type AskResult,
+  answerAsync,
+  type AskResultWithSource,
 } from "@/lib/ask-parser";
+import { ClaudeStatusPill } from "@/components/claude-status-pill";
+import { Skeleton } from "@/components/ui/skeleton";
 import { INTEGRATION_PROVIDERS } from "@/lib/integrations";
 import { useEventsStore } from "@/lib/store/events";
 import { useIntegrationsStore } from "@/lib/store/integrations";
@@ -41,7 +43,7 @@ const PREBAKED: PrebakedQuery[] = [
   { emoji: "👨‍👩‍👧", label: "Who's coming over?", question: "Who's in the family?" },
 ];
 
-function answerToSpeech(result: AskResult): string {
+function answerToSpeech(result: AskResultWithSource): string {
   if (!result.bullets?.length) return result.headline;
   return `${result.headline} ${result.bullets.join(". ")}.`;
 }
@@ -49,7 +51,8 @@ function answerToSpeech(result: AskResult): string {
 export function ParentAskSheet() {
   const [open, setOpen] = useState(false);
   const [question, setQuestion] = useState<string | null>(null);
-  const [result, setResult] = useState<AskResult | null>(null);
+  const [result, setResult] = useState<AskResultWithSource | null>(null);
+  const [pending, setPending] = useState(false);
   const [listening, setListening] = useState(false);
   const [micSupported, setMicSupported] = useState(false);
 
@@ -83,11 +86,17 @@ export function ParentAskSheet() {
     }
   }, [open]);
 
-  function ask(q: string) {
-    const r = answer(q, snapshot);
+  async function ask(q: string) {
     setQuestion(q);
-    setResult(r);
-    speak(answerToSpeech(r));
+    setResult(null);
+    setPending(true);
+    try {
+      const r = await answerAsync(q, snapshot);
+      setResult(r);
+      speak(answerToSpeech(r));
+    } finally {
+      setPending(false);
+    }
   }
 
   async function handleMic() {
@@ -177,7 +186,21 @@ export function ParentAskSheet() {
           aria-live="polite"
           className="mt-5"
         >
-          {result ? (
+          {pending ? (
+            <div className="rounded-2xl bg-panel p-5">
+              {question ? (
+                <>
+                  <p className="text-[13px] font-bold uppercase tracking-[0.08em] text-muted">
+                    You asked
+                  </p>
+                  <p className="mt-1 text-[16px] text-ink-2">{question}</p>
+                </>
+              ) : null}
+              <Skeleton className="mt-3 h-[28px] w-3/4" />
+              <Skeleton className="mt-2 h-[18px] w-full" />
+              <Skeleton className="mt-1.5 h-[18px] w-5/6" />
+            </div>
+          ) : result ? (
             <div className="rounded-2xl bg-panel p-5">
               {question ? (
                 <p className="text-[13px] font-bold uppercase tracking-[0.08em] text-muted">
@@ -197,11 +220,14 @@ export function ParentAskSheet() {
                   ))}
                 </ul>
               ) : null}
-              {result.sources?.length ? (
-                <p className="mt-4 text-[12px] uppercase tracking-[0.08em] text-muted">
-                  Source: {result.sources.join(" · ")}
-                </p>
-              ) : null}
+              <div className="mt-4 flex flex-wrap items-center gap-2">
+                <ClaudeStatusPill source={result.source} />
+                {result.sources?.length ? (
+                  <p className="text-[12px] uppercase tracking-[0.08em] text-muted">
+                    Source: {result.sources.join(" · ")}
+                  </p>
+                ) : null}
+              </div>
             </div>
           ) : (
             <p className="px-1 text-[15px] leading-snug text-muted">

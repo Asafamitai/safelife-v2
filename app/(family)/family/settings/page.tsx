@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { AppHeader } from "@/components/app-frame";
+import { SettingsApiKey } from "@/components/settings-api-key";
 import { useEventsStore } from "@/lib/store/events";
 import { useIntegrationsStore } from "@/lib/store/integrations";
 import { useMedsStore } from "@/lib/store/meds";
@@ -76,6 +77,8 @@ export default function FamilySettingsPage() {
           body="No location tracking. No live audio or video. Opt-in per service."
           status="Strict"
         />
+
+        <SettingsApiKey />
 
         <button
           type="button"

@@ -15,6 +15,9 @@
  *   2+ hits OR any "strong" hit → scam
  */
 
+import { callClaudeTool, ClaudeUnavailableError } from "./claude";
+import { SCAM_SYSTEM_PROMPT, SCAM_TOOL } from "./claude-prompts";
+
 export type ScamRating = "safe" | "suspicious" | "scam";
 
 export interface ScamHit {
@@ -155,4 +158,91 @@ export function classifyMessage(input: string): ScamResult {
   else rating = "safe";
 
   return { rating, hits, explanation: explain(rating, hits) };
+}
+
+export type ScamSource =
+  | "claude"
+  | "fallback-no-key"
+  | "fallback-error"
+  | "fallback-rules";
+
+export interface ScamResultWithSource extends ScamResult {
+  source: ScamSource;
+}
+
+function parseScamTool(input: unknown): ScamResult {
+  if (typeof input !== "object" || input === null)
+    throw new Error("not-object");
+  const o = input as Record<string, unknown>;
+  if (
+    o.rating !== "safe" &&
+    o.rating !== "suspicious" &&
+    o.rating !== "scam"
+  )
+    throw new Error("rating");
+  if (typeof o.explanation !== "string") throw new Error("explanation");
+  const hits: ScamHit[] = Array.isArray(o.hits)
+    ? (o.hits as unknown[]).flatMap((raw) => {
+        if (typeof raw !== "object" || raw === null) return [];
+        const h = raw as Record<string, unknown>;
+        if (
+          h.category !== "url" &&
+          h.category !== "money" &&
+          h.category !== "urgency" &&
+          h.category !== "personal"
+        )
+          return [];
+        if (typeof h.matched !== "string") return [];
+        return [
+          {
+            category: h.category,
+            matched: h.matched,
+            strong: h.strong === true ? true : undefined,
+          },
+        ];
+      })
+    : [];
+  return { rating: o.rating, hits, explanation: o.explanation };
+}
+
+/**
+ * Claude-first scam classifier with a silent fallback to the rule-based
+ * `classifyMessage()`. Never throws. The `source` field tells the UI
+ * which path produced the result so the demo can show a "Live"/"Rules"
+ * pill.
+ *
+ * An empty input short-circuits to the rules path (placeholder copy);
+ * there is no point asking the model to classify an empty string.
+ */
+export async function classifyMessageAsync(
+  input: string
+): Promise<ScamResultWithSource> {
+  const trimmed = input.trim();
+  if (!trimmed) {
+    return { ...classifyMessage(input), source: "fallback-rules" };
+  }
+
+  try {
+    const result = await callClaudeTool<ScamResult>({
+      system: SCAM_SYSTEM_PROMPT,
+      user: `Message to classify:\n\n${trimmed}`,
+      tool: SCAM_TOOL as unknown as Parameters<
+        typeof callClaudeTool<ScamResult>
+      >[0]["tool"],
+      parse: parseScamTool,
+      max_tokens: 600,
+    });
+    return { ...result, source: "claude" };
+  } catch (err) {
+    if (
+      err instanceof ClaudeUnavailableError &&
+      err.reason === "no-key"
+    ) {
+      return { ...classifyMessage(input), source: "fallback-no-key" };
+    }
+    if (typeof console !== "undefined" && err instanceof Error) {
+      console.warn("[claude/scam] fallback:", err.message);
+    }
+    return { ...classifyMessage(input), source: "fallback-error" };
+  }
 }

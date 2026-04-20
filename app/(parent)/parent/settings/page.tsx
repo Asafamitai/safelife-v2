@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { AppHeader } from "@/components/app-frame";
+import { SettingsApiKey } from "@/components/settings-api-key";
 import { cn } from "@/lib/utils";
 
 type Size = "Standard" | "Large" | "Extra large";
@@ -52,6 +53,7 @@ export default function ParentSettingsPage() {
           on={autoForward}
           onChange={setAutoForward}
         />
+        <SettingsApiKey />
       </section>
     </>
   );

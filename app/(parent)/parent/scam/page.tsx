@@ -5,10 +5,18 @@ import { useRouter } from "next/navigation";
 import { AppHeader } from "@/components/app-frame";
 import { CategoryTag } from "@/components/category-tag";
 import { TourBanner } from "@/components/tour-banner";
-import { classifyMessage, type ScamRating } from "@/lib/scam-heuristics";
+import {
+  classifyMessage,
+  classifyMessageAsync,
+  type ScamRating,
+  type ScamResultWithSource,
+} from "@/lib/scam-heuristics";
 import { useEventsStore } from "@/lib/store/events";
 import { useTourStore } from "@/lib/tour";
 import { cn } from "@/lib/utils";
+import { ClaudeStatusPill } from "@/components/claude-status-pill";
+import { Skeleton } from "@/components/ui/skeleton";
+import { hasClaudeKey } from "@/lib/claude";
 
 const TONE: Record<
   ScamRating,
@@ -48,7 +56,44 @@ export default function ParentScamPage() {
     }
   }, [tourActive, tourStep, text]);
 
-  const result = useMemo(() => classifyMessage(text), [text]);
+  // Local rules run synchronously on every keystroke — snappy UX.
+  const localResult = useMemo<ScamResultWithSource>(
+    () => ({ ...classifyMessage(text), source: "fallback-rules" }),
+    [text]
+  );
+  const [liveResult, setLiveResult] = useState<ScamResultWithSource | null>(
+    null
+  );
+  const [pending, setPending] = useState(false);
+
+  // When the user pauses typing and a key is configured, ask Claude too.
+  // Debounced so every character doesn't fire a request.
+  useEffect(() => {
+    if (!hasClaudeKey()) {
+      setLiveResult(null);
+      return;
+    }
+    const trimmed = text.trim();
+    if (!trimmed) {
+      setLiveResult(null);
+      return;
+    }
+    let cancelled = false;
+    setPending(true);
+    const timer = setTimeout(async () => {
+      const r = await classifyMessageAsync(trimmed);
+      if (cancelled) return;
+      setPending(false);
+      setLiveResult(r.source === "claude" ? r : null);
+    }, 450);
+    return () => {
+      cancelled = true;
+      clearTimeout(timer);
+      setPending(false);
+    };
+  }, [text]);
+
+  const result = liveResult ?? localResult;
   const tone = TONE[result.rating];
   const isEmpty = text.trim().length === 0;
 
@@ -182,6 +227,14 @@ export default function ParentScamPage() {
                 </li>
               ))}
             </ul>
+          ) : null}
+          {!isEmpty ? (
+            <div className="mt-3 flex items-center gap-2">
+              <ClaudeStatusPill source={result.source} />
+              {pending ? (
+                <Skeleton className="h-[14px] w-[100px] bg-white/60" />
+              ) : null}
+            </div>
           ) : null}
         </div>
 
