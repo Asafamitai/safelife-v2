@@ -1,16 +1,22 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AppHeader } from "@/components/app-frame";
 import { SettingsApiKey } from "@/components/settings-api-key";
+import { useVoiceSettingsStore, type VoiceMode } from "@/lib/store/voice-settings";
 import { cn } from "@/lib/utils";
 
 type Size = "Standard" | "Large" | "Extra large";
 
 export default function ParentSettingsPage() {
   const [size, setSize] = useState<Size>("Large");
-  const [voice, setVoice] = useState(true);
   const [autoForward, setAutoForward] = useState(false);
+  const voiceMode = useVoiceSettingsStore((s) => s.mode);
+  const setVoiceMode = useVoiceSettingsStore((s) => s.setMode);
+  const hydrate = useVoiceSettingsStore((s) => s.hydrate);
+  useEffect(() => {
+    hydrate();
+  }, [hydrate]);
 
   return (
     <>
@@ -41,12 +47,7 @@ export default function ParentSettingsPage() {
           </div>
         </fieldset>
 
-        <Toggle
-          label="Voice control"
-          body="Read messages aloud and accept spoken replies."
-          on={voice}
-          onChange={setVoice}
-        />
+        <VoiceModeField mode={voiceMode} onChange={setVoiceMode} />
         <Toggle
           label="Auto-forward suspicious texts"
           body="Sends only flagged messages to SafeLife — never your personal texts."
@@ -56,6 +57,91 @@ export default function ParentSettingsPage() {
         <SettingsApiKey />
       </section>
     </>
+  );
+}
+
+const VOICE_OPTIONS: { id: VoiceMode; label: string; body: string }[] = [
+  {
+    id: "off",
+    label: "Off",
+    body: "No voice at all. Buttons and text only.",
+  },
+  {
+    id: "on-tap",
+    label: "On tap",
+    body: "Tap the speaker icon to hear a card read aloud.",
+  },
+  {
+    id: "on-focus",
+    label: "Auto",
+    body: "Read cards aloud when I scroll to them.",
+  },
+];
+
+function VoiceModeField({
+  mode,
+  onChange,
+}: {
+  mode: VoiceMode;
+  onChange: (m: VoiceMode) => void;
+}) {
+  return (
+    <fieldset className="rounded-2xl border border-line bg-white p-5">
+      <legend className="px-1 text-[13px] font-bold uppercase tracking-[0.08em] text-muted">
+        Voice
+      </legend>
+      <p className="mt-1 px-1 text-[14px] leading-snug text-ink-2">
+        Reads SafeLife cards aloud. iPhone keeps a hand on the steering
+        wheel — the first tap always unlocks audio.
+      </p>
+      <div
+        role="radiogroup"
+        aria-label="Voice mode"
+        className="mt-3 grid gap-2"
+      >
+        {VOICE_OPTIONS.map((o) => {
+          const on = mode === o.id;
+          return (
+            <button
+              key={o.id}
+              type="button"
+              role="radio"
+              aria-checked={on}
+              onClick={() => onChange(o.id)}
+              className={cn(
+                "flex min-h-[64px] w-full items-start gap-3 rounded-xl border p-4 text-left transition-transform hover:-translate-y-[1px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent",
+                on ? "border-ink bg-ink text-white" : "border-line bg-white"
+              )}
+            >
+              <span
+                aria-hidden
+                className={cn(
+                  "mt-1 inline-flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full border-2",
+                  on ? "border-white" : "border-line"
+                )}
+              >
+                {on ? (
+                  <span className="h-2.5 w-2.5 rounded-full bg-white" />
+                ) : null}
+              </span>
+              <span className="flex flex-col gap-0.5">
+                <span className={cn("text-[16px] font-bold", on ? "text-white" : "text-ink")}>
+                  {o.label}
+                </span>
+                <span
+                  className={cn(
+                    "text-[14px] leading-snug",
+                    on ? "text-white/80" : "text-ink-2"
+                  )}
+                >
+                  {o.body}
+                </span>
+              </span>
+            </button>
+          );
+        })}
+      </div>
+    </fieldset>
   );
 }
 

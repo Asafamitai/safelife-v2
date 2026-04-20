@@ -16,6 +16,7 @@ import { INTEGRATION_PROVIDERS } from "@/lib/integrations";
 import { cn } from "@/lib/utils";
 import { ClaudeStatusPill } from "@/components/claude-status-pill";
 import { Skeleton } from "@/components/ui/skeleton";
+import { VoiceButton } from "@/components/ui/voice-button";
 
 interface QA {
   id: string;
@@ -79,6 +80,12 @@ export default function FamilyAskPage() {
             onChange={(e) => setText(e.target.value)}
             placeholder="e.g. Did dad take his morning meds?"
             className="min-h-[48px] flex-1 rounded-2xl border border-line bg-white p-3 text-[15px] text-ink placeholder:text-muted focus:border-accent focus:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+          />
+          <VoiceButton
+            variant="mic"
+            onResult={(t) => setText(t)}
+            label="Speak a question"
+            className="self-stretch"
           />
           <button
             type="submit"

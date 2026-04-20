@@ -1,12 +1,18 @@
 import { test, expect } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
+import { bypassOnboarding } from "./_setup";
 
-const PARENT_ROUTES = ["/parent/home", "/parent/scam"];
+const PARENT_ROUTES = [
+  "/parent/home",
+  "/parent/scam",
+  "/parent/settings",
+];
 
 for (const route of PARENT_ROUTES) {
   test(`parent route ${route} has no WCAG AA contrast violations`, async ({
     page,
   }) => {
+    await bypassOnboarding(page, "parent");
     await page.goto(route);
     // Settle layout / fonts before scanning.
     await page.waitForLoadState("networkidle");

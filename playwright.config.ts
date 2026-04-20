@@ -23,10 +23,10 @@ export default defineConfig({
     },
   ],
   webServer: {
-    // Use the production build for tests — `next start` serves prebuilt
-    // pages instantly; `next dev` recompiles per-route on cold starts and
-    // can stall on slow disks. CI runs `next build` before this.
-    command: `next start -p ${PORT}`,
+    // `next.config.mjs` uses `output: "export"`, so we serve the static
+    // `out/` directory instead of `next start`. CI (and local runs) must
+    // `npm run build` beforehand.
+    command: `serve out -l ${PORT}`,
     url: `http://localhost:${PORT}`,
     reuseExistingServer: !process.env.CI,
     timeout: 60_000,

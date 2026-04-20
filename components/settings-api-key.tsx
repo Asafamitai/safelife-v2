@@ -61,7 +61,7 @@ export function SettingsApiKey() {
             Live
           </span>
         ) : (
-          <span className="rounded-full bg-panel px-2 py-0.5 text-[11px] font-bold text-muted">
+          <span className="rounded-full bg-panel px-2 py-0.5 text-[11px] font-bold text-ink-2">
             Rules
           </span>
         )}

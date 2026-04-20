@@ -16,6 +16,7 @@ import { useTourStore } from "@/lib/tour";
 import { cn } from "@/lib/utils";
 import { ClaudeStatusPill } from "@/components/claude-status-pill";
 import { Skeleton } from "@/components/ui/skeleton";
+import { VoiceButton } from "@/components/ui/voice-button";
 import { hasClaudeKey } from "@/lib/claude";
 
 const TONE: Record<
@@ -213,9 +214,23 @@ export default function ParentScamPage() {
               </p>
             </div>
           </div>
-          <p className={cn("mt-3 text-[17px] leading-snug", tone.ink)}>
-            {result.explanation}
-          </p>
+          <div className="mt-3 flex items-start gap-2">
+            <p
+              className={cn(
+                "flex-1 text-[17px] leading-snug",
+                tone.ink
+              )}
+            >
+              {result.explanation}
+            </p>
+            {!isEmpty ? (
+              <VoiceButton
+                text={`${tone.label}. ${result.explanation}`}
+                label="Read the result aloud"
+                className="bg-white/70"
+              />
+            ) : null}
+          </div>
           {result.hits.length > 0 ? (
             <ul className="mt-3 flex flex-wrap gap-1.5">
               {result.hits.slice(0, 6).map((h, i) => (

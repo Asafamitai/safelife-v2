@@ -5,10 +5,12 @@
  * anyone who hasn't pasted their own key.
  */
 import { test, expect } from "@playwright/test";
+import { bypassOnboarding } from "./_setup";
 
 test("family ask answers via rules when no Claude key is set", async ({
   page,
 }) => {
+  await bypassOnboarding(page);
   // Guarantee a fresh session (no leaked key between specs).
   await page.addInitScript(() => {
     try {
@@ -23,7 +25,10 @@ test("family ask answers via rules when no Claude key is set", async ({
   await page.getByRole("button", { name: /^ask$/i }).click();
 
   // Fallback must produce a visible answer — the rules path always returns one.
-  await expect(page.getByText(/How is dad today\?/)).toBeVisible();
-  await expect(page.getByLabel(/answered by built-in rules/i)).toBeVisible();
+  const conversation = page.getByRole("region", { name: /conversation/i });
+  await expect(conversation.getByText(/How is dad today\?/i)).toBeVisible();
+  await expect(
+    page.getByLabel(/answered by built-in rules/i).first()
+  ).toBeVisible();
   await expect(page.getByLabel(/answered by claude/i)).toBeHidden();
 });

@@ -23,7 +23,7 @@ export function ClaudeStatusPill({ source, className }: Props) {
     <span
       className={cn(
         "inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-[0.08em]",
-        isLive ? "bg-ok-bg text-ok-ink" : "bg-panel text-muted",
+        isLive ? "bg-ok-bg text-ok-ink" : "bg-panel text-ink-2",
         className
       )}
       aria-label={isLive ? "Answered by Claude" : "Answered by built-in rules"}
@@ -32,7 +32,7 @@ export function ClaudeStatusPill({ source, className }: Props) {
         aria-hidden
         className={cn(
           "h-1.5 w-1.5 rounded-full",
-          isLive ? "bg-ok-ink" : "bg-muted"
+          isLive ? "bg-ok-ink" : "bg-ink-2"
         )}
       />
       {label}

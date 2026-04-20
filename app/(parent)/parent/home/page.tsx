@@ -1,28 +1,55 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect } from "react";
 import { AppHeader } from "@/components/app-frame";
 import { HelpSheet } from "@/components/help-sheet";
 import { MedCard } from "@/components/med-card";
 import { ParentAskSheet } from "@/components/parent-ask-sheet";
+import { VoiceButton } from "@/components/ui/voice-button";
 import { useMedsStore } from "@/lib/store/meds";
+import { useVoiceSettingsStore } from "@/lib/store/voice-settings";
+import { speak as voiceSpeak } from "@/lib/voice";
 
 export default function ParentHomePage() {
   const meds = useMedsStore((s) => s.meds);
   const allTaken = meds.every((m) => m.takenAt);
+  const hydrate = useVoiceSettingsStore((s) => s.hydrate);
+  const voiceMode = useVoiceSettingsStore((s) => s.mode);
+  const title = allTaken ? "You’re all set today" : "Today";
+  const greeting = allTaken
+    ? "Nothing pending. Tap below if you need anything."
+    : "A couple of things to do. Take your time.";
+
+  useEffect(() => {
+    hydrate();
+  }, [hydrate]);
+
+  // on-focus mode: speak the greeting once when the page mounts.
+  useEffect(() => {
+    if (voiceMode === "on-focus") {
+      voiceSpeak(`Good morning, Dad. ${title}. ${greeting}`, {
+        trigger: "focus",
+      });
+    }
+  }, [voiceMode, title, greeting]);
 
   return (
     <>
       <AppHeader
         parent
         subtitle="Good morning, Dad"
-        title={allTaken ? "You’re all set today" : "Today"}
+        title={title}
+        right={
+          <VoiceButton
+            text={`Good morning, Dad. ${title}. ${greeting}`}
+            label="Read today's summary aloud"
+          />
+        }
       />
 
       <p className="px-5 pb-2 text-[18px] leading-snug text-ink-2">
-        {allTaken
-          ? "Nothing pending. Tap below if you need anything."
-          : "A couple of things to do. Take your time."}
+        {greeting}
       </p>
 
       <section

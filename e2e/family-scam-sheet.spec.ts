@@ -1,6 +1,8 @@
 import { test, expect } from "@playwright/test";
+import { bypassOnboarding } from "./_setup";
 
 test("family member can open the scam-check review sheet", async ({ page }) => {
+  await bypassOnboarding(page);
   await page.goto("/family/home");
 
   // The feed should render with at least one card.

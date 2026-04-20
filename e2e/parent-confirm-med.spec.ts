@@ -1,6 +1,8 @@
 import { test, expect } from "@playwright/test";
+import { bypassOnboarding } from "./_setup";
 
 test("parent can confirm a medication", async ({ page }) => {
+  await bypassOnboarding(page, "parent");
   await page.goto("/parent/home");
 
   // Pre-condition: at least one med shows the confirm button.

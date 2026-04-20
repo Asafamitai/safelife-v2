@@ -30,7 +30,7 @@ export function AppFrame({
         >
           <span aria-hidden>←</span> Back to SafeLife
         </Link>
-        <span className="text-[11px] font-semibold uppercase tracking-[0.14em] text-muted">
+        <span className="text-[11px] font-semibold uppercase tracking-[0.14em] text-ink-2">
           Demo preview
         </span>
       </div>
@@ -43,7 +43,7 @@ export function AppFrame({
         >
           <span aria-hidden>←</span> SafeLife
         </Link>
-        <span className="text-[10px] font-semibold uppercase tracking-[0.14em] text-muted">
+        <span className="text-[10px] font-semibold uppercase tracking-[0.14em] text-ink-2">
           Demo
         </span>
       </div>

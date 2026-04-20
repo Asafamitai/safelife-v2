@@ -6,8 +6,17 @@
  */
 import { test, expect } from "@playwright/test";
 
-function clearStorage(page: import("@playwright/test").Page) {
-  return page.addInitScript(() => {
+/**
+ * Clear any persisted onboarding state ONCE after load. Avoid
+ * `addInitScript`-style clearing — that runs on every navigation and
+ * would wipe the state we're trying to observe, e.g. "completed" being
+ * written during the flow.
+ */
+async function clearStorageOnce(page: import("@playwright/test").Page) {
+  // Hit any page at the same origin so localStorage has an origin to
+  // clear against. `/` is cheap.
+  await page.goto("/");
+  await page.evaluate(() => {
     try {
       window.localStorage.clear();
     } catch {}
@@ -17,7 +26,7 @@ function clearStorage(page: import("@playwright/test").Page) {
 test("first-run visitor is redirected from /family/home to /onboarding", async ({
   page,
 }) => {
-  await clearStorage(page);
+  await clearStorageOnce(page);
 
   await page.goto("/family/home");
 
@@ -32,7 +41,7 @@ test("first-run visitor is redirected from /family/home to /onboarding", async (
 test("completing onboarding as family lands on /family/home and sticks", async ({
   page,
 }) => {
-  await clearStorage(page);
+  await clearStorageOnce(page);
 
   await page.goto("/onboarding/");
   await page.getByRole("link", { name: /get started/i }).click();
@@ -57,7 +66,7 @@ test("completing onboarding as family lands on /family/home and sticks", async (
 test("opening an invite URL pre-selects the opposite persona", async ({
   page,
 }) => {
-  await clearStorage(page);
+  await clearStorageOnce(page);
 
   // Payload: sender=Maya, role=family — recipient should end up as the parent side.
   const invite =
