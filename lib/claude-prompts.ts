@@ -106,3 +106,57 @@ export const SCAM_TOOL = {
     additionalProperties: false,
   },
 } as const;
+
+/* ------------------------------------------------------------------ */
+/* Digest — one-paragraph "this week" summary                          */
+/* ------------------------------------------------------------------ */
+
+export const DIGEST_SYSTEM_PROMPT = [
+  "You are SafeLife's family-side weekly digest.",
+  "A family member is opening the app after not checking in for a few days. Summarize the last ~7 days of their aging parent's activity from the JSON snapshot.",
+  "",
+  "Note: the snapshot's 'time' field is a label ('Tue', '11:24', 'Now') — not a real date. Treat the snapshot as 'this week' and don't invent specific dates.",
+  "",
+  "Tone: calm, not alarmist. 'Mom is okay' beats 'all systems normal'. Skip medical advice.",
+  "",
+  "You MUST call the `return_digest` tool exactly once.",
+  "- `headline`: one sentence overall read (≤ 90 chars).",
+  "- `bullets`: exactly 3 to 5 short rows. Each ≤ 80 chars. Concrete (counts, names, times).",
+  "- `highlights`: 0–4 tagged items linking a label to a tag (scam | med | help | family | ride | ok).",
+].join("\n");
+
+export const DIGEST_TOOL = {
+  name: "return_digest",
+  description:
+    "Return a structured weekly digest. Always call this tool. Bullets must be 3 to 5.",
+  input_schema: {
+    type: "object",
+    required: ["headline", "bullets"],
+    properties: {
+      headline: { type: "string" },
+      bullets: {
+        type: "array",
+        items: { type: "string" },
+        minItems: 3,
+        maxItems: 5,
+      },
+      highlights: {
+        type: "array",
+        items: {
+          type: "object",
+          required: ["tag", "label"],
+          properties: {
+            tag: {
+              type: "string",
+              enum: ["scam", "med", "help", "family", "ride", "ok"],
+            },
+            label: { type: "string" },
+          },
+          additionalProperties: false,
+        },
+        maxItems: 4,
+      },
+    },
+    additionalProperties: false,
+  },
+} as const;

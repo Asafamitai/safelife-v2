@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useMemo } from "react";
 import { AppHeader } from "@/components/app-frame";
 import { AnomalyBanner } from "@/components/anomaly-banner";
+import { DigestCard } from "@/components/digest-card";
 import { FeedCard } from "@/components/feed-card";
 import { StatusPill } from "@/components/status-pill";
 import { CheckMessageSheet } from "@/components/check-message-sheet";
@@ -69,6 +70,8 @@ export default function FamilyHomePage() {
       />
 
       <AnomalyBanner />
+
+      <DigestCard dismissible />
 
       <WeeklyStats />
 

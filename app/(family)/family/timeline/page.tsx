@@ -1,9 +1,14 @@
 "use client";
 
-import { useMemo } from "react";
+import { Suspense, useMemo } from "react";
 import { AppHeader } from "@/components/app-frame";
+import { DigestCard } from "@/components/digest-card";
 import { EmptyState } from "@/components/empty-state";
 import { FeedCard } from "@/components/feed-card";
+import {
+  TimelineFilterBar,
+  useActiveFilters,
+} from "@/components/timeline-filter";
 import { useEventsStore } from "@/lib/store/events";
 import { iconForVariant, type MockEvent } from "@/lib/mock-events";
 
@@ -21,7 +26,28 @@ function bucketOf(time?: string): Bucket {
 }
 
 export default function FamilyTimelinePage() {
+  return (
+    <>
+      <AppHeader subtitle="This week" title="Timeline" />
+      <DigestCard />
+      <Suspense fallback={null}>
+        <FilteredTimeline />
+      </Suspense>
+    </>
+  );
+}
+
+function FilteredTimeline() {
   const events = useEventsStore((s) => s.events);
+  const active = useActiveFilters();
+
+  const filtered = useMemo(
+    () =>
+      active.size === 0
+        ? events
+        : events.filter((e) => active.has(e.variant as never)),
+    [events, active]
+  );
 
   const buckets = useMemo(() => {
     const map: Record<Bucket, MockEvent[]> = {
@@ -29,13 +55,15 @@ export default function FamilyTimelinePage() {
       Yesterday: [],
       Earlier: [],
     };
-    for (const e of events) map[bucketOf(e.time)].push(e);
+    for (const e of filtered) map[bucketOf(e.time)].push(e);
     return map;
-  }, [events]);
+  }, [filtered]);
+
+  const hasAny = filtered.length > 0;
 
   return (
     <>
-      <AppHeader subtitle="This week" title="Timeline" />
+      <TimelineFilterBar />
 
       <section className="flex flex-1 flex-col gap-5 px-4 pb-6 pt-2">
         {BUCKET_ORDER.map((b) =>
@@ -58,6 +86,13 @@ export default function FamilyTimelinePage() {
             </div>
           ) : null
         )}
+        {!hasAny && events.length > 0 ? (
+          <EmptyState
+            emoji="🔎"
+            title="No matches"
+            body="Try a different filter above, or clear filters to see everything."
+          />
+        ) : null}
         {events.length === 0 ? (
           <EmptyState
             emoji="📭"
