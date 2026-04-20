@@ -104,8 +104,13 @@ all day."*
    app" noise. Only: scam blocked, meds missed, help requested, appointments
    booked/confirmed.
 
-Not in v1: payments, wearables/fall-detection, calling the cavalry /
-emergency services, medical records.
+4. **Emergency dashboard** — Parent-side `🚨` tab. Real-time health and
+   location alerts with severity levels (critical / warning / info), sourced
+   from connected providers (Apple Health, Apple Watch, etc.). "Notify
+   Emergency Contacts" runs a multi-step flow: select contacts → confirm →
+   sending animation → success, and drops a soft note in the family feed.
+
+Not in v1: payments, actually dispatching 911, medical records.
 
 ## 4. Information architecture
 
