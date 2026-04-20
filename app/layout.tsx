@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
+import { FirstRunGate } from "@/components/first-run-gate";
 import { Toaster } from "@/components/toaster";
 import "./globals.css";
 
@@ -16,7 +18,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        {children}
+        <Suspense fallback={null}>
+          <FirstRunGate>{children}</FirstRunGate>
+        </Suspense>
         <Toaster />
       </body>
     </html>
