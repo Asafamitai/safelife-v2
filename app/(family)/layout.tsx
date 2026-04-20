@@ -11,9 +11,10 @@ export default function FamilyLayout({ children }: { children: ReactNode }) {
       <BottomTabBar
         tabs={[
           { href: "/family/home", label: "Home", icon: "🏠" },
-          { href: "/family/ask", label: "Ask", icon: "💬" },
+          { href: "/family/meds", label: "Meds", icon: "💊" },
           { href: "/family/trends", label: "Trends", icon: "📈" },
           { href: "/family/safe-zones", label: "Zones", icon: "📍" },
+          { href: "/family/ask", label: "Ask", icon: "💬" },
           { href: "/family/settings", label: "Settings", icon: "⚙️" },
         ]}
       />
