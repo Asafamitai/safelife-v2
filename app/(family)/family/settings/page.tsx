@@ -13,6 +13,9 @@ export default function FamilySettingsPage() {
   const resetMeds = useMedsStore((s) => s.reset);
   const resetMembers = useMembersStore((s) => s.reset);
   const memberCount = useMembersStore((s) => s.members.length);
+  const connectedCount = useIntegrationsStore(
+    (s) => Object.keys(s.connected).length
+  );
 
   function resetAll() {
     resetEvents();
@@ -48,6 +51,24 @@ export default function FamilySettingsPage() {
           </div>
           <p className="mt-1 text-[13px] leading-snug text-ink-2">
             See who’s connected to this family. Tap to manage.
+          </p>
+        </Link>
+        <Link
+          href="/family/connections"
+          className="rounded-2xl border border-line bg-white p-4 transition-transform hover:-translate-y-[1px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+        >
+          <div className="flex items-start justify-between gap-3">
+            <h3 className="text-[15px] font-bold text-ink">
+              <span aria-hidden className="mr-1.5">🔌</span>
+              Connected services
+            </h3>
+            <span className="rounded-full bg-ok-bg px-2 py-0.5 text-[11px] font-bold text-ok-ink">
+              {connectedCount} on
+            </span>
+          </div>
+          <p className="mt-1 text-[13px] leading-snug text-ink-2">
+            Pharmacies, health devices, fraud alerts, MCP servers, and more —
+            opt-in per provider.
           </p>
         </Link>
         <SettingRow
