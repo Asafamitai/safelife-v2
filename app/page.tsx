@@ -1,10 +1,12 @@
 import Link from "next/link";
 import { PhoneFrame } from "@/components/phone-frame";
 import { DemoSheet } from "@/components/demo-sheet";
+import { DemoResetGate } from "@/components/demo-reset-gate";
 
 export default function LandingPage() {
   return (
     <main className="bg-hero-gradient">
+      <DemoResetGate />
       {/* ======================================================================
           HERO
          ====================================================================== */}
