@@ -1,5 +1,7 @@
 "use client";
 
+import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { useToastsStore, type ToastTone } from "@/lib/store/toasts";
 import { cn } from "@/lib/utils";
 
@@ -9,17 +11,32 @@ const TONE: Record<ToastTone, { bg: string; ink: string; emoji: string }> = {
   warn: { bg: "bg-ride-bg", ink: "text-ride-ink", emoji: "!" },
 };
 
+/**
+ * Toast stack. Inside the demo shell (`#demo-phone-viewport`), the
+ * stack portals into the phone so toasts sit below the status bar
+ * instead of covering the whole browser. Off-shell (landing etc.)
+ * it falls back to a viewport-fixed layer.
+ */
 export function Toaster() {
   const toasts = useToastsStore((s) => s.toasts);
   const remove = useToastsStore((s) => s.remove);
+  const [container, setContainer] = useState<HTMLElement | null>(null);
+
+  useEffect(() => {
+    setContainer(document.getElementById("demo-phone-viewport"));
+  }, [toasts.length]);
 
   if (toasts.length === 0) return null;
 
-  return (
+  const scoped = container != null;
+  const layer = (
     <div
       role="region"
       aria-label="Notifications"
-      className="pointer-events-none fixed inset-x-0 top-3 z-[60] flex flex-col items-center gap-2 px-3"
+      className={cn(
+        "pointer-events-none z-[60] flex flex-col items-center gap-2 px-3",
+        scoped ? "absolute inset-x-0 top-10" : "fixed inset-x-0 top-3"
+      )}
     >
       {toasts.map((t) => {
         const tone = TONE[t.tone];
@@ -63,4 +80,6 @@ export function Toaster() {
       })}
     </div>
   );
+
+  return scoped ? createPortal(layer, container) : layer;
 }

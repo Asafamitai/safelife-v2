@@ -58,8 +58,12 @@ export function AppFrame({
               className="absolute left-1/2 top-[16px] z-20 hidden h-7 w-[120px] -translate-x-1/2 rounded-full bg-ink md:block"
             />
 
-            {/* Inner screen */}
+            {/* Inner screen — also the portal target for every Sheet
+                opened inside the demo (see components/ui/sheet.tsx), so
+                overlays and bottom-sheets render within the phone chrome
+                instead of covering the whole viewport. */}
             <div
+              id="demo-phone-viewport"
               className={cn(
                 "relative flex flex-col overflow-hidden bg-off-white",
                 "min-h-[calc(100vh-52px)] md:min-h-0 md:h-[820px] md:w-[400px] md:rounded-[42px]",
