@@ -7,7 +7,7 @@ export default function ParentLayout({ children }: { children: ReactNode }) {
   return (
     <AppFrame className="text-[18px]">
       <PersonaSwitch />
-      <div className="flex flex-1 flex-col">{children}</div>
+      <div className="flex flex-1 flex-col overflow-y-auto">{children}</div>
       <BottomTabBar
         parent
         tabs={[

@@ -5,9 +5,9 @@ import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 
 /**
- * Compact persona toggle anchored to the top-right of the in-app phone
- * frame. Only renders inside /parent/* and /family/*; outside the apps
- * (landing, /privacy, /terms) it stays hidden.
+ * Top-of-phone persona toggle for the demo. Renders as a full-width
+ * segmented pill so there's no ambiguity about which side of the product
+ * you're looking at. Only mounts inside /parent/* and /family/*.
  */
 export function PersonaSwitch() {
   const pathname = usePathname();
@@ -15,31 +15,34 @@ export function PersonaSwitch() {
   const isYou = pathname.startsWith("/family");
   if (!isLovedOne && !isYou) return null;
 
-  const otherHref = isLovedOne ? "/family/home" : "/parent/home";
-  const otherLabel = isLovedOne ? "your view" : "their view";
-
   return (
-    <div
-      role="group"
-      aria-label="Demo: switch persona"
-      className="absolute right-3 top-3 z-20 flex items-center gap-1 rounded-full border border-line bg-white/95 p-0.5 text-[11px] font-bold shadow-card backdrop-blur"
-    >
-      <span
-        aria-current="page"
-        className={cn(
-          "rounded-full px-2.5 py-1",
-          isLovedOne ? "bg-ride-bg text-ride-ink" : "bg-family-bg text-family-ink"
-        )}
-      >
-        {isLovedOne ? "Their app" : "Your app"}
-      </span>
-      <Link
-        href={otherHref}
-        aria-label={`Switch to ${otherLabel}`}
-        className="rounded-full px-2.5 py-1 text-ink-2 hover:bg-panel focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent active:bg-line"
-      >
-        ⇄ {isLovedOne ? "Yours" : "Theirs"}
-      </Link>
+    <div className="px-4 pb-1 pt-3" role="group" aria-label="Demo: switch persona">
+      <div className="grid grid-cols-2 gap-1 rounded-full border border-line bg-panel p-1 text-[13px] font-bold shadow-sm">
+        <Link
+          href="/family/home"
+          aria-current={isYou ? "page" : undefined}
+          className={cn(
+            "rounded-full px-3 py-2 text-center leading-tight transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent",
+            isYou
+              ? "bg-ink text-white shadow-sm"
+              : "text-ink-2 hover:text-ink"
+          )}
+        >
+          For You
+        </Link>
+        <Link
+          href="/parent/home"
+          aria-current={isLovedOne ? "page" : undefined}
+          className={cn(
+            "rounded-full px-3 py-2 text-center leading-tight transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent",
+            isLovedOne
+              ? "bg-ink text-white shadow-sm"
+              : "text-ink-2 hover:text-ink"
+          )}
+        >
+          For Your Loved One
+        </Link>
+      </div>
     </div>
   );
 }

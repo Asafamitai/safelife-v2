@@ -7,7 +7,7 @@ export default function FamilyLayout({ children }: { children: ReactNode }) {
   return (
     <AppFrame>
       <PersonaSwitch />
-      <div className="flex flex-1 flex-col">{children}</div>
+      <div className="flex flex-1 flex-col overflow-y-auto">{children}</div>
       <BottomTabBar
         tabs={[
           { href: "/family/home", label: "Home", icon: "🏠" },
