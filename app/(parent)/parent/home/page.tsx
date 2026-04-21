@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { AiBrainBanner } from "@/components/ai-brain-banner";
 import { AppHeader } from "@/components/app-frame";
 import { HelpSheet } from "@/components/help-sheet";
@@ -15,8 +15,13 @@ import { speak as voiceSpeak } from "@/lib/voice";
 
 export default function ParentHomePage() {
   const meds = useMedsStore((s) => s.meds);
-  const helpEvents = useEventsStore((s) =>
-    s.events.filter((e) => e.id.startsWith("help-"))
+  // Select the stable store array, then derive the filtered list in a
+  // useMemo. Selecting `.filter(...)` directly returns a fresh array on
+  // every snapshot check and triggers an infinite re-render in Zustand.
+  const events = useEventsStore((s) => s.events);
+  const helpEvents = useMemo(
+    () => events.filter((e) => e.id.startsWith("help-")),
+    [events]
   );
   const allTaken = meds.every((m) => m.takenAt);
   const hydrate = useVoiceSettingsStore((s) => s.hydrate);
