@@ -32,7 +32,14 @@ import { cn } from "@/lib/utils";
 type Phase = "pick" | "confirm" | "done";
 
 interface HelpRoute {
-  id: "ride" | "appointment" | "prescription" | "bill" | "message" | "tech";
+  id:
+    | "ride"
+    | "appointment"
+    | "prescription"
+    | "food"
+    | "bill"
+    | "message"
+    | "tech";
   label: string;
   helper: string;
   emoji: string;
@@ -84,6 +91,22 @@ const ROUTES: HelpRoute[] = [
     feedTag: "Task completed",
     feedTitle: "Dad refilled Lisinopril",
     feedBody: "CVS on Main Street · ready in about 2 hours.",
+  },
+  {
+    id: "food",
+    label: "Order food",
+    helper: "Uber Eats — your usual, one tap.",
+    emoji: "🍔",
+    mode: "action",
+    confirm:
+      "Order your usual from Luigi's Pizza on Uber Eats — one slice + salad, $27.40?",
+    doneTitle: "Order placed",
+    doneBody:
+      "Luigi's Pizza via Uber Eats · $27.40 charged to Chase · ETA 25 min.",
+    feedVariant: "family",
+    feedTag: "Task completed",
+    feedTitle: "Dad ordered lunch",
+    feedBody: "Luigi's Pizza · Uber Eats · ETA 25 min.",
   },
   {
     id: "bill",

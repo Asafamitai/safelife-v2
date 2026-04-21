@@ -44,7 +44,11 @@ export function BottomTabBar({ tabs, parent = false }: Props) {
             aria-current={active ? "page" : undefined}
             className={cn(
               "relative flex min-h-[44px] flex-col items-center gap-1 rounded-lg py-1 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent active:bg-panel",
-              parent ? "text-[13px]" : "text-[10px]",
+              parent
+                ? tabs.length >= 6
+                  ? "text-[11px]"
+                  : "text-[13px]"
+                : "text-[10px]",
               active ? "font-bold text-ink" : "text-muted hover:text-ink-2"
             )}
           >
