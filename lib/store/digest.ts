@@ -40,9 +40,25 @@ function read(): Persisted {
     if (!raw) return INITIAL;
     const parsed = JSON.parse(raw) as Persisted;
     if (typeof parsed !== "object" || parsed === null) return INITIAL;
+    // Hard-validate the result shape — older deploys persisted slightly
+    // different keys, and DigestCard calls .bullets.map() / .headline
+    // without optional chaining.
+    const rawResult = parsed.result as unknown;
+    let result: DigestResultWithSource | null = null;
+    if (
+      rawResult &&
+      typeof rawResult === "object" &&
+      typeof (rawResult as { headline?: unknown }).headline === "string" &&
+      Array.isArray((rawResult as { bullets?: unknown }).bullets) &&
+      typeof (rawResult as { source?: unknown }).source === "string" &&
+      typeof (rawResult as { computedAt?: unknown }).computedAt === "number"
+    ) {
+      result = rawResult as DigestResultWithSource;
+    }
     return {
-      result: parsed.result ?? null,
-      dismissedAt: typeof parsed.dismissedAt === "number" ? parsed.dismissedAt : null,
+      result,
+      dismissedAt:
+        typeof parsed.dismissedAt === "number" ? parsed.dismissedAt : null,
     };
   } catch {
     return INITIAL;

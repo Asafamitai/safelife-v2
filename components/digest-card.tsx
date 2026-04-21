@@ -136,7 +136,7 @@ export function DigestCard({ dismissible = false, className }: Props) {
       </div>
 
       <ul className="mt-3 grid gap-1.5 text-[14px] leading-snug text-ink-2">
-        {result.bullets.map((b, i) => (
+        {(result.bullets ?? []).map((b, i) => (
           <li key={i}>· {b}</li>
         ))}
       </ul>
