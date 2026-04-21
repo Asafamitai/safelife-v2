@@ -50,6 +50,7 @@ function answerToSpeech(result: AskResultWithSource): string {
 
 export function ParentAskSheet() {
   const [open, setOpen] = useState(false);
+  const [text, setText] = useState("");
   const [question, setQuestion] = useState<string | null>(null);
   const [result, setResult] = useState<AskResultWithSource | null>(null);
   const [pending, setPending] = useState(false);
@@ -87,16 +88,24 @@ export function ParentAskSheet() {
   }, [open]);
 
   async function ask(q: string) {
-    setQuestion(q);
+    const trimmed = q.trim();
+    if (!trimmed) return;
+    setQuestion(trimmed);
     setResult(null);
     setPending(true);
+    setText("");
     try {
-      const r = await answerAsync(q, snapshot);
+      const r = await answerAsync(trimmed, snapshot);
       setResult(r);
       speak(answerToSpeech(r));
     } finally {
       setPending(false);
     }
+  }
+
+  function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    ask(text);
   }
 
   async function handleMic() {
@@ -141,11 +150,53 @@ export function ParentAskSheet() {
         <SheetHeader>
           <SheetTitle>Ask SafeLife</SheetTitle>
           <SheetDescription>
-            Tap a question, or hold the mic and speak.
+            Type, speak, or tap a question below.
           </SheetDescription>
         </SheetHeader>
 
-        <ul className="mt-5 grid gap-3">
+        <form onSubmit={handleSubmit} className="mt-5">
+          <label htmlFor="parent-ask-input" className="sr-only">
+            Ask a question
+          </label>
+          <div className="flex items-stretch gap-2">
+            <input
+              id="parent-ask-input"
+              type="text"
+              value={text}
+              onChange={(e) => setText(e.target.value)}
+              placeholder="e.g. Did I take my pills?"
+              className="min-h-[56px] flex-1 rounded-2xl border border-line bg-white px-4 text-[17px] text-ink placeholder:text-muted focus:border-accent focus:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+            />
+            {micSupported ? (
+              <button
+                type="button"
+                onClick={handleMic}
+                aria-pressed={listening}
+                aria-busy={listening}
+                aria-label={listening ? "Listening" : "Speak your question"}
+                className={cn(
+                  "flex min-h-[56px] items-center justify-center gap-1.5 rounded-2xl border border-accent bg-chip-blue px-3 text-[14px] font-bold text-accent transition-transform hover:-translate-y-[1px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent",
+                  listening && "animate-pulse"
+                )}
+              >
+                <span aria-hidden className="text-[20px]">🎙️</span>
+                <span>{listening ? "…" : "Speak"}</span>
+              </button>
+            ) : null}
+            <button
+              type="submit"
+              disabled={!text.trim() || pending}
+              className="min-h-[56px] rounded-2xl bg-ink px-5 text-[16px] font-bold text-white transition-transform hover:-translate-y-[1px] disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+            >
+              Ask
+            </button>
+          </div>
+        </form>
+
+        <p className="mt-5 px-1 text-[12px] font-bold uppercase tracking-[0.1em] text-muted">
+          Try
+        </p>
+        <ul className="mt-2 grid gap-3">
           {PREBAKED.map((p) => (
             <li key={p.label}>
               <button
@@ -165,22 +216,6 @@ export function ParentAskSheet() {
             </li>
           ))}
         </ul>
-
-        {micSupported ? (
-          <button
-            type="button"
-            onClick={handleMic}
-            aria-pressed={listening}
-            aria-busy={listening}
-            className={cn(
-              "mt-3 flex w-full min-h-[68px] items-center justify-center gap-3 rounded-2xl border-2 border-dashed border-accent bg-chip-blue px-4 text-[18px] font-bold text-accent transition-transform hover:-translate-y-[1px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent",
-              listening && "animate-pulse"
-            )}
-          >
-            <span aria-hidden className="text-[24px]">🎙️</span>
-            {listening ? "Listening…" : "Tap and speak"}
-          </button>
-        ) : null}
 
         <section
           aria-live="polite"
