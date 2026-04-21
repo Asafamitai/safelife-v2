@@ -63,7 +63,123 @@ export default function LandingPage() {
       </section>
 
       {/* ======================================================================
-          THREE PILLARS — mirrors the investor deck's core capabilities
+          AI BRAIN DIAGRAM — inputs → SafeLife AI → simple outputs
+         ====================================================================== */}
+      <section className="border-t border-line bg-ink px-6 py-20 text-white">
+        <div className="mx-auto max-w-[1200px]">
+          <div className="text-center">
+            <p className="text-[13px] font-bold uppercase tracking-[0.16em] text-chip-blue">
+              Not a feature — the decision-maker
+            </p>
+            <h2 className="mt-3 text-balance text-[34px] font-extrabold leading-[1.1] tracking-tight lg:text-[44px]">
+              One AI layer between them and everything.
+            </h2>
+            <p className="mx-auto mt-4 max-w-[620px] text-[16px] leading-[1.5] text-white/70">
+              SafeLife AI learns what’s normal, decides when to act, and
+              executes — across every app, device, and moment.
+            </p>
+          </div>
+
+          <div className="mt-12 grid gap-8 lg:grid-cols-[1fr_1.1fr_1fr] lg:items-center">
+            {/* LEFT: apps + devices — the messy world */}
+            <div>
+              <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-white/50">
+                Apps &amp; devices
+              </p>
+              <ul className="mt-4 grid gap-2">
+                {[
+                  { emoji: "🍔", label: "Uber Eats" },
+                  { emoji: "💳", label: "Credit cards & banks" },
+                  { emoji: "⌚", label: "Apple Watch" },
+                  { emoji: "💍", label: "Oura Ring" },
+                  { emoji: "📱", label: "Phone sensors" },
+                  { emoji: "💊", label: "Pharmacy" },
+                ].map((i) => (
+                  <li
+                    key={i.label}
+                    className="flex items-center gap-3 rounded-xl bg-white/5 px-3 py-2.5 text-[14px] font-semibold text-white/80"
+                  >
+                    <span aria-hidden className="text-[18px]">
+                      {i.emoji}
+                    </span>
+                    {i.label}
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* CENTER: the AI brain */}
+            <div className="flex flex-col items-center">
+              <div
+                aria-hidden
+                className="hidden text-[22px] text-white/40 lg:block"
+              >
+                →
+              </div>
+              <div className="relative mt-3 flex aspect-square w-full max-w-[340px] items-center justify-center rounded-full bg-gradient-to-br from-accent to-[#3a78ef] p-8 text-center shadow-[0_24px_60px_-20px_rgba(19,87,211,0.6)]">
+                <div>
+                  <div
+                    aria-hidden
+                    className="mx-auto grid h-14 w-14 place-items-center rounded-2xl bg-white/15 text-[28px]"
+                  >
+                    🧠
+                  </div>
+                  <p className="mt-3 text-[22px] font-extrabold tracking-tight">
+                    SafeLife AI
+                  </p>
+                  <p className="mt-2 text-[13px] font-semibold uppercase tracking-[0.18em] text-white/80">
+                    Learns · Decides · Acts
+                  </p>
+                  <ul className="mt-4 grid gap-1.5 text-[13px] leading-snug text-white/85">
+                    <li>Understands behavior &amp; preferences</li>
+                    <li>Detects risk &amp; anomalies</li>
+                    <li>Takes action automatically</li>
+                  </ul>
+                </div>
+              </div>
+              <div
+                aria-hidden
+                className="mt-3 hidden text-[22px] text-white/40 lg:block"
+              >
+                →
+              </div>
+            </div>
+
+            {/* RIGHT: simple outputs — human-language bubbles */}
+            <div>
+              <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-white/50">
+                Simple outputs
+              </p>
+              <ul className="mt-4 grid gap-3">
+                {[
+                  { emoji: "🍔", text: "“Order my usual” → Done" },
+                  { emoji: "💳", text: "“This $340 charge is unusual for you”" },
+                  { emoji: "🚨", text: "“Fall detected — help is on the way”" },
+                  { emoji: "❤️", text: "“You didn’t sleep well — take it easy today”" },
+                ].map((o) => (
+                  <li
+                    key={o.text}
+                    className="flex items-start gap-3 rounded-2xl bg-white/10 px-4 py-3 text-[14px] font-semibold leading-snug text-white"
+                  >
+                    <span aria-hidden className="text-[18px]">
+                      {o.emoji}
+                    </span>
+                    {o.text}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+
+          <p className="mx-auto mt-14 max-w-[720px] text-balance text-center text-[16px] font-semibold leading-[1.5] text-white/80">
+            One AI layer replaces complexity across every app, device, and
+            decision.
+          </p>
+        </div>
+      </section>
+
+      {/* ======================================================================
+          FOUR PILLARS — what the AI does for seniors + families
          ====================================================================== */}
       <section className="border-t border-line bg-white px-6 py-20">
         <div className="mx-auto max-w-[1100px]">
@@ -76,23 +192,7 @@ export default function LandingPage() {
             </h2>
           </div>
 
-          <div className="mt-12 grid gap-5 md:grid-cols-3">
-            <article className="rounded-2xl border border-line bg-off-white p-6">
-              <div
-                aria-hidden
-                className="grid h-12 w-12 place-items-center rounded-2xl bg-scam-bg text-[26px]"
-              >
-                🛡️
-              </div>
-              <h3 className="mt-4 text-[20px] font-bold tracking-tight text-ink">
-                Scam Shield
-              </h3>
-              <p className="mt-2 text-[15px] leading-[1.5] text-ink-2">
-                AI detects suspicious messages, calls, and transactions —
-                blocking threats before damage is done.
-              </p>
-            </article>
-
+          <div className="mt-12 grid gap-5 md:grid-cols-2 lg:grid-cols-4">
             <article className="rounded-2xl border border-line bg-off-white p-6">
               <div
                 aria-hidden
@@ -100,12 +200,44 @@ export default function LandingPage() {
               >
                 ✨
               </div>
-              <h3 className="mt-4 text-[20px] font-bold tracking-tight text-ink">
-                Task Execution
+              <h3 className="mt-4 text-[18px] font-bold tracking-tight text-ink">
+                Everyday Tasks
               </h3>
-              <p className="mt-2 text-[15px] leading-[1.5] text-ink-2">
-                Pay a bill, refill a prescription, book a ride — all through
-                one simple conversation. The AI takes action, not just answers.
+              <p className="mt-2 text-[14px] leading-[1.5] text-ink-2">
+                “Order my usual”, refill a prescription, book a ride — the AI
+                learns preferences and executes, not just answers.
+              </p>
+            </article>
+
+            <article className="rounded-2xl border border-line bg-off-white p-6">
+              <div
+                aria-hidden
+                className="grid h-12 w-12 place-items-center rounded-2xl bg-scam-bg text-[26px]"
+              >
+                🛡️
+              </div>
+              <h3 className="mt-4 text-[18px] font-bold tracking-tight text-ink">
+                Financial Protection
+              </h3>
+              <p className="mt-2 text-[14px] leading-[1.5] text-ink-2">
+                Detects suspicious messages and unusual charges — patterns,
+                not rules — and translates them into plain language.
+              </p>
+            </article>
+
+            <article className="rounded-2xl border border-line bg-off-white p-6">
+              <div
+                aria-hidden
+                className="grid h-12 w-12 place-items-center rounded-2xl bg-ok-bg text-[26px]"
+              >
+                ❤️
+              </div>
+              <h3 className="mt-4 text-[18px] font-bold tracking-tight text-ink">
+                Safety &amp; Health
+              </h3>
+              <p className="mt-2 text-[14px] leading-[1.5] text-ink-2">
+                Apple Watch, Oura, phone sensors. The AI learns their
+                baseline, spots deviations, and decides when to alert.
               </p>
             </article>
 
@@ -116,12 +248,12 @@ export default function LandingPage() {
               >
                 👪
               </div>
-              <h3 className="mt-4 text-[20px] font-bold tracking-tight text-ink">
+              <h3 className="mt-4 text-[18px] font-bold tracking-tight text-ink">
                 Family Layer
               </h3>
-              <p className="mt-2 text-[15px] leading-[1.5] text-ink-2">
-                Optional visibility and controls keep loved ones informed
-                without being intrusive.
+              <p className="mt-2 text-[14px] leading-[1.5] text-ink-2">
+                Loved ones see what matters. No “they opened the app” noise —
+                just scams blocked, meds missed, help requested.
               </p>
             </article>
           </div>
