@@ -355,6 +355,43 @@ export default function ParentMoneyPage() {
         })}
       </section>
 
+      {/* ========== More protections (Phase 2 stubs) ========== */}
+      <section
+        aria-label="More protections"
+        className="flex flex-col gap-2 px-4 pb-2 pt-4"
+      >
+        <h2 className="px-1 text-[13px] font-bold uppercase tracking-[0.12em] text-muted">
+          More protections
+        </h2>
+        <div className="grid gap-2 sm:grid-cols-3">
+          {[
+            { emoji: "♻️", title: "Recurring payments" },
+            { emoji: "🎯", title: "Savings goals" },
+            { emoji: "🧊", title: "Freeze a card" },
+          ].map((s) => (
+            <div
+              key={s.title}
+              className="flex items-center gap-3 rounded-2xl border border-dashed border-line bg-white px-3 py-3"
+            >
+              <span
+                aria-hidden
+                className="grid h-9 w-9 flex-shrink-0 place-items-center rounded-lg bg-panel text-[18px]"
+              >
+                {s.emoji}
+              </span>
+              <div className="flex flex-1 flex-col">
+                <span className="text-[13px] font-bold text-ink">
+                  {s.title}
+                </span>
+                <span className="rounded-full bg-panel px-2 py-0.5 text-[10px] font-bold uppercase tracking-[0.08em] text-muted w-fit mt-0.5">
+                  Coming soon
+                </span>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
       {/* ========== Quick actions ========== */}
       <section
         aria-label="Quick actions"

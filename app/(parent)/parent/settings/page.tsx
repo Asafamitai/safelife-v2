@@ -23,6 +23,8 @@ export default function ParentSettingsPage() {
       <AppHeader parent subtitle="Settings" title="Make it yours" />
 
       <section className="flex flex-1 flex-col gap-4 px-4 pb-6">
+        <LearnedPreferences />
+
         <fieldset className="rounded-2xl border border-line bg-white p-5">
           <legend className="px-1 text-[13px] font-bold uppercase tracking-[0.08em] text-muted">
             Text size
@@ -57,6 +59,40 @@ export default function ParentSettingsPage() {
         <SettingsApiKey />
       </section>
     </>
+  );
+}
+
+const LEARNED = [
+  { emoji: "☕", label: "Coffee every 7 AM" },
+  { emoji: "🍕", label: "Luigi's on Saturday" },
+  { emoji: "🏥", label: "Dr. Chen monthly" },
+  { emoji: "👟", label: "~2,800 steps/day" },
+  { emoji: "💤", label: "7h sleep baseline" },
+];
+
+function LearnedPreferences() {
+  return (
+    <section className="rounded-2xl border border-accent/30 bg-chip-blue p-5">
+      <p className="text-[11px] font-bold uppercase tracking-[0.12em] text-accent">
+        <span aria-hidden className="mr-1.5">🧠</span>
+        SafeLife has learned
+      </p>
+      <p className="mt-1 text-[14px] leading-snug text-ink-2">
+        What your usual looks like. I use this to decide when something is
+        worth mentioning.
+      </p>
+      <ul className="mt-3 flex flex-wrap gap-2">
+        {LEARNED.map((l) => (
+          <li
+            key={l.label}
+            className="inline-flex items-center gap-1.5 rounded-full border border-accent/30 bg-white px-3 py-1.5 text-[13px] font-semibold text-ink-2"
+          >
+            <span aria-hidden>{l.emoji}</span>
+            {l.label}
+          </li>
+        ))}
+      </ul>
+    </section>
   );
 }
 

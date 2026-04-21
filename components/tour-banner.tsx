@@ -52,7 +52,7 @@ export function TourBanner({
             type="button"
             onClick={stop}
             aria-label="End guided tour"
-            className="text-[12px] font-semibold text-accent/70 hover:text-accent"
+            className="min-h-[36px] rounded-lg border border-accent/40 bg-white px-3 text-[12px] font-bold text-accent hover:bg-chip-blue focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
           >
             End
           </button>

@@ -4,7 +4,6 @@ import Link from "next/link";
 import { useMemo } from "react";
 import { AiBrainBanner } from "@/components/ai-brain-banner";
 import { AppHeader } from "@/components/app-frame";
-import { AnomalyBanner } from "@/components/anomaly-banner";
 import { DigestCard } from "@/components/digest-card";
 import { FeedCard } from "@/components/feed-card";
 import { StatusPill } from "@/components/status-pill";
@@ -73,8 +72,6 @@ export default function FamilyHomePage() {
         title="Here it is — the new event at the top"
         body="That’s the whole loop: they act once, you see it immediately."
       />
-
-      <AnomalyBanner />
 
       <DigestCard dismissible />
 

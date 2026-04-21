@@ -5,10 +5,10 @@
  * screens so viewers feel the AI as a persistent presence — not a
  * hidden feature.
  *
- * Pulls the summary bullets from the existing stores so it reacts to
- * demo state (scams blocked, doses taken, anomalies). Plain-language,
- * short, one-line-each — matches the "Simple outputs" framing from the
- * pitch deck.
+ * When any urgent anomaly is detected, the banner takes over the job
+ * that used to belong to <AnomalyBanner /> — same red scam styling, same
+ * link to /family/insights. That way the family home keeps a single top
+ * alert instead of stacking two.
  */
 
 import { useMemo } from "react";
@@ -31,7 +31,7 @@ export function AiBrainBanner({ parent = false, href }: Props) {
   const meds = useMedsStore((s) => s.meds);
   const connected = useIntegrationsStore((s) => s.connected);
 
-  const summary = useMemo(() => {
+  const state = useMemo(() => {
     const anomalies = detect({
       connected: new Set(Object.keys(connected)),
       meds,
@@ -45,71 +45,105 @@ export function AiBrainBanner({ parent = false, href }: Props) {
     const urgent = anomalies.find((a) => a.severity === "urgent");
     if (urgent) {
       return {
+        tone: "alert" as const,
         lead: urgent.title,
         hint: urgent.body ?? "SafeLife is watching this closely.",
       };
     }
     if (blocked > 0) {
       return {
+        tone: "ok" as const,
         lead: `Blocked ${blocked} scam${blocked === 1 ? "" : "s"} today.`,
         hint: "Plain language. No action needed from you.",
       };
     }
     if (takenNow === meds.length && meds.length > 0) {
       return {
+        tone: "ok" as const,
         lead: "All meds taken. Sleep looks normal.",
         hint: "SafeLife is watching — quiet day so far.",
       };
     }
     return {
+      tone: "ok" as const,
       lead: "Learning your parent's baseline.",
       hint: "I'll speak up when something needs attention.",
     };
   }, [events, meds, connected]);
 
+  const alert = state.tone === "alert";
+
   const Inner = (
     <div className="flex items-start gap-3">
       <div
         aria-hidden
-        className="grid h-11 w-11 flex-shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-accent to-[#3a78ef] text-[22px] text-white shadow-[0_10px_24px_-10px_rgba(19,87,211,0.6)]"
+        className={cn(
+          "grid h-11 w-11 flex-shrink-0 place-items-center rounded-2xl text-[22px] text-white",
+          alert
+            ? "bg-scam-ink shadow-[0_10px_24px_-10px_rgba(180,35,24,0.5)]"
+            : "bg-gradient-to-br from-accent to-[#3a78ef] shadow-[0_10px_24px_-10px_rgba(19,87,211,0.6)]"
+        )}
       >
-        🧠
+        {alert ? "🚨" : "🧠"}
       </div>
       <div className="flex-1">
         <div className="flex items-center gap-2">
-          <span className="text-[11px] font-bold uppercase tracking-[0.12em] text-accent">
+          <span
+            className={cn(
+              "text-[11px] font-bold uppercase tracking-[0.12em]",
+              alert ? "text-scam-ink" : "text-accent"
+            )}
+          >
             SafeLife AI
           </span>
-          <span className="rounded-full bg-chip-blue px-2 py-0.5 text-[10px] font-bold uppercase tracking-[0.1em] text-accent">
-            Learns · Decides · Acts
+          <span
+            className={cn(
+              "rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-[0.1em]",
+              alert ? "bg-white text-scam-ink" : "bg-chip-blue text-accent"
+            )}
+          >
+            {alert ? "Needs attention" : "Learns · Decides · Acts"}
           </span>
         </div>
         <p
           className={cn(
-            "mt-1 font-bold leading-snug text-ink",
+            "mt-1 font-bold leading-snug",
+            alert ? "text-scam-ink" : "text-ink",
             parent ? "text-[17px]" : "text-[15px]"
           )}
         >
-          {summary.lead}
+          {state.lead}
         </p>
         <p
           className={cn(
-            "leading-snug text-ink-2",
+            "leading-snug",
+            alert ? "text-scam-ink/80" : "text-ink-2",
             parent ? "mt-1 text-[14px]" : "mt-0.5 text-[12px]"
           )}
         >
-          {summary.hint}
+          {state.hint}
         </p>
       </div>
     </div>
   );
 
-  const className =
-    "block rounded-2xl border border-accent/30 bg-white p-4 transition-transform focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent";
+  const className = cn(
+    "block rounded-2xl border p-4 transition-transform focus-visible:outline-none focus-visible:ring-2",
+    alert
+      ? "border-scam-ink/30 bg-scam-bg focus-visible:ring-scam-ink"
+      : "border-accent/30 bg-white focus-visible:ring-accent"
+  );
 
-  if (href) {
+  // When alerting, force a href to /family/insights so the banner acts
+  // as the anomaly link — replacing the standalone AnomalyBanner.
+  const linkHref = alert ? href ?? "/family/insights" : href;
+
+  if (linkHref) {
     return (
-      <Link href={href} className={cn(className, "hover:-translate-y-[1px]")}>
+      <Link
+        href={linkHref}
+        className={cn(className, "hover:-translate-y-[1px]")}
+      >
         {Inner}
       </Link>
     );

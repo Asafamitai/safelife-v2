@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { AppHeader } from "@/components/app-frame";
 import { CategoryTag } from "@/components/category-tag";
 import { TourBanner } from "@/components/tour-banner";
@@ -145,7 +146,23 @@ export default function ParentScamPage() {
         body="Read the analysis, then tap “Block and tell my family”."
       />
 
-      <p className="px-5 pb-2 pt-2 text-[18px] leading-snug text-ink-2">
+      <Link
+        href="/parent/money"
+        className="mx-4 mt-2 flex items-center gap-3 rounded-2xl border border-line bg-chip-blue p-4 transition-transform hover:-translate-y-[1px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+      >
+        <span aria-hidden className="text-[22px]">💳</span>
+        <span className="flex flex-1 flex-col">
+          <span className="text-[15px] font-bold text-ink">
+            SafeLife AI also watches your bank &amp; cards
+          </span>
+          <span className="text-[13px] leading-snug text-ink-2">
+            Unusual charges get flagged the same way.
+          </span>
+        </span>
+        <span aria-hidden className="text-accent text-lg">→</span>
+      </Link>
+
+      <p className="px-5 pb-2 pt-3 text-[18px] leading-snug text-ink-2">
         Paste a text or email below. We’ll explain what we see in one sentence.
       </p>
 

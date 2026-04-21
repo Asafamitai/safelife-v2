@@ -259,7 +259,7 @@ export function HelpSheet() {
                             "rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-[0.08em]",
                             r.mode === "action"
                               ? "bg-ok-bg text-ok-ink"
-                              : "bg-panel text-ink-2"
+                              : "bg-ride-bg text-ride-ink"
                           )}
                         >
                           {r.mode === "action" ? "I'll do it" : "We'll call"}
