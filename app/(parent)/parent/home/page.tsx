@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect } from "react";
+import { AiBrainBanner } from "@/components/ai-brain-banner";
 import { AppHeader } from "@/components/app-frame";
 import { HelpSheet } from "@/components/help-sheet";
 import { MedCard } from "@/components/med-card";
@@ -51,6 +52,10 @@ export default function ParentHomePage() {
       <p className="px-5 pb-2 text-[18px] leading-snug text-ink-2">
         {greeting}
       </p>
+
+      <div className="px-4 pt-2">
+        <AiBrainBanner parent />
+      </div>
 
       <section
         aria-label="I need help"

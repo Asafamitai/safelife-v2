@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useMemo } from "react";
+import { AiBrainBanner } from "@/components/ai-brain-banner";
 import { AppHeader } from "@/components/app-frame";
 import { AnomalyBanner } from "@/components/anomaly-banner";
 import { DigestCard } from "@/components/digest-card";
@@ -59,6 +60,10 @@ export default function FamilyHomePage() {
 
       <div className="px-5 pb-3">
         <StatusPill tone={status.tone}>{status.label}</StatusPill>
+      </div>
+
+      <div className="px-4 pb-2">
+        <AiBrainBanner href="/family/insights" />
       </div>
 
       <TourBanner

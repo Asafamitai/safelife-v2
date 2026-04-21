@@ -33,6 +33,14 @@ export const MOCK_EVENTS: MockEvent[] = [
     time: "Now",
   },
   {
+    id: "evt-ai-charge",
+    variant: "scam",
+    tag: "Financial monitoring",
+    title: "Unusual $340 charge at Amazon",
+    body: "SafeLife AI flagged this — it's 4× Dad's typical weekly spend. Review to approve or dispute.",
+    time: "9:48",
+  },
+  {
     id: "evt-2",
     variant: "med",
     tag: "Daily flow",
@@ -41,12 +49,28 @@ export const MOCK_EVENTS: MockEvent[] = [
     time: "8:02",
   },
   {
+    id: "evt-ai-sleep",
+    variant: "family",
+    tag: "Health insight",
+    title: "Sleep worse than usual",
+    body: "Oura: 4h 50m (down from 7h baseline). SafeLife suggests a quieter day — appointment isn't urgent.",
+    time: "7:15",
+  },
+  {
     id: "evt-3",
     variant: "family",
     tag: "Family update",
     title: "Doctor tomorrow, 10:30 AM",
     body: "Ride support booked. Dad will be notified 30 min before.",
     time: "Tue",
+  },
+  {
+    id: "evt-ai-movement",
+    variant: "ok",
+    tag: "Safety",
+    title: "Checked in after a quiet morning",
+    body: "Apple Watch: no movement 9–11 AM, outside Mom's usual rhythm. SafeLife called — she was napping. All good.",
+    time: "Mon",
   },
   {
     id: "evt-4",

@@ -74,6 +74,17 @@ export default function ParentEmergencyPage() {
         title="Help is one tap away"
       />
 
+      <div className="mx-4 mt-1 mb-2 rounded-2xl bg-chip-blue px-4 py-3">
+        <p className="text-[11px] font-bold uppercase tracking-[0.12em] text-accent">
+          <span aria-hidden className="mr-1.5">🧠</span>
+          SafeLife AI · baseline learned
+        </p>
+        <p className="mt-1 text-[14px] leading-snug text-ink-2">
+          14 days of Apple Watch + Oura data. I'll speak up when heart
+          rate, sleep, or movement drift from your normal.
+        </p>
+      </div>
+
       <section className="px-4 pb-3 pt-2" aria-label="Emergency status">
         <div
           className={cn(
