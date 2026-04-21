@@ -55,6 +55,17 @@ export default function ConnectionsPage() {
         opt-in, and you can disconnect any time.
       </p>
 
+      <div className="mx-4 mb-3 rounded-2xl border border-line bg-chip-blue p-4">
+        <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-accent">
+          Integration Engine
+        </p>
+        <p className="mt-1 text-[13px] leading-snug text-ink-2">
+          SafeLife uses MCP and open APIs to plug into the services your parent
+          already uses — live data, no new logins for them to remember, and
+          you stay in control of what's shared.
+        </p>
+      </div>
+
       <nav
         aria-label="Filter by category"
         className="flex gap-2 overflow-x-auto px-4 pb-3"

@@ -15,21 +15,23 @@ export default function LandingPage() {
           {/* Left: brand text, CTAs */}
           <div>
             <span className="inline-block rounded-full bg-chip-blue px-3.5 py-1.5 text-[13px] font-semibold tracking-[0.02em] text-accent">
-              For families supporting someone they care about
+              The life operating system for seniors
             </span>
 
             <h1 className="mt-6 text-[44px] font-extrabold leading-[1.02] tracking-tight text-ink lg:text-[64px]">
               Make sure they’re okay — without managing everything.
             </h1>
 
-            <p className="mt-6 max-w-[540px] text-[18px] leading-[1.5] text-ink-2">
-              SafeLife sits on top of the tools they already use — messages,
-              calls, reminders, and apps — and makes them simpler, safer, and
-              easier to act on.
+            <p className="mt-6 max-w-[540px] text-[20px] font-semibold leading-[1.4] text-ink">
+              One interface. Every task. Fully protected.
             </p>
             <p className="mt-4 max-w-[540px] text-[17px] leading-[1.5] text-ink-2">
-              You don’t need to manage it. You’re only looped in when something
-              actually matters.
+              SafeLife is an AI-powered integration layer that sits on top of
+              the tools your parent already uses — banking, pharmacy, ride
+              apps, messaging — and makes them usable, safe, and supportive.
+            </p>
+            <p className="mt-4 max-w-[540px] text-[17px] leading-[1.5] text-ink-2">
+              You’re only looped in when something actually matters.
             </p>
 
             <div className="mt-8 flex flex-wrap gap-3">
@@ -57,6 +59,79 @@ export default function LandingPage() {
 
           {/* Right: phone */}
           <PhoneFrame />
+        </div>
+      </section>
+
+      {/* ======================================================================
+          THREE PILLARS — mirrors the investor deck's core capabilities
+         ====================================================================== */}
+      <section className="border-t border-line bg-white px-6 py-20">
+        <div className="mx-auto max-w-[1100px]">
+          <div className="text-center">
+            <p className="text-[13px] font-bold uppercase tracking-[0.16em] text-accent">
+              From confusion to confidence
+            </p>
+            <h2 className="mt-3 text-balance text-[34px] font-extrabold leading-[1.15] tracking-tight text-ink lg:text-[40px]">
+              One interface. Every task. Fully protected.
+            </h2>
+          </div>
+
+          <div className="mt-12 grid gap-5 md:grid-cols-3">
+            <article className="rounded-2xl border border-line bg-off-white p-6">
+              <div
+                aria-hidden
+                className="grid h-12 w-12 place-items-center rounded-2xl bg-scam-bg text-[26px]"
+              >
+                🛡️
+              </div>
+              <h3 className="mt-4 text-[20px] font-bold tracking-tight text-ink">
+                Scam Shield
+              </h3>
+              <p className="mt-2 text-[15px] leading-[1.5] text-ink-2">
+                AI detects suspicious messages, calls, and transactions —
+                blocking threats before damage is done.
+              </p>
+            </article>
+
+            <article className="rounded-2xl border border-line bg-off-white p-6">
+              <div
+                aria-hidden
+                className="grid h-12 w-12 place-items-center rounded-2xl bg-chip-blue text-[26px]"
+              >
+                ✨
+              </div>
+              <h3 className="mt-4 text-[20px] font-bold tracking-tight text-ink">
+                Task Execution
+              </h3>
+              <p className="mt-2 text-[15px] leading-[1.5] text-ink-2">
+                Pay a bill, refill a prescription, book a ride — all through
+                one simple conversation. The AI takes action, not just answers.
+              </p>
+            </article>
+
+            <article className="rounded-2xl border border-line bg-off-white p-6">
+              <div
+                aria-hidden
+                className="grid h-12 w-12 place-items-center rounded-2xl bg-family-bg text-[26px]"
+              >
+                👪
+              </div>
+              <h3 className="mt-4 text-[20px] font-bold tracking-tight text-ink">
+                Family Layer
+              </h3>
+              <p className="mt-2 text-[15px] leading-[1.5] text-ink-2">
+                Optional visibility and controls keep loved ones informed
+                without being intrusive.
+              </p>
+            </article>
+          </div>
+
+          <p className="mx-auto mt-10 max-w-[720px] text-center text-[14px] leading-[1.55] text-muted">
+            Under the hood: an Integration Engine built on MCP and open APIs —
+            standardized, secure connections to banking, health, and
+            communication platforms, with no new credentials for your parent
+            to manage.
+          </p>
         </div>
       </section>
 
