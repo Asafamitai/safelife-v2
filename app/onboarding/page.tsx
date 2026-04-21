@@ -23,9 +23,10 @@ export default function OnboardingWelcomePage() {
       </div>
 
       <ul className="grid gap-3 pt-2 text-[15px] leading-snug text-ink-2">
-        <Perk emoji="🛡" label="Scam messages — checked and explained in plain English." />
+        <Perk emoji="🛡" label="Protection — suspicious texts and charges flagged in plain English." />
+        <Perk emoji="💳" label="Bills, ride, pharmacy, food — SafeLife gets it done." />
         <Perk emoji="💊" label="Medication reminders — one tap to confirm." />
-        <Perk emoji="🙋" label="Help in one tap — ride, appointment, message, tech support." />
+        <Perk emoji="🙋" label="Help in one tap — for anything else." />
       </ul>
 
       <div className="mt-auto grid gap-3 pt-4">

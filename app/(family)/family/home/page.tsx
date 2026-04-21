@@ -24,7 +24,7 @@ export default function FamilyHomePage() {
   const meds = useMedsStore((s) => s.meds);
   const connectedCount = Object.keys(connectedMap).length;
   // Status pill is a single source of truth: anomalies first, then a feed
-  // signal as a fallback. If neither, "Mom is okay".
+  // signal as a fallback. If neither, "Dad is okay".
   const anomalies = useMemo(
     () => detect({ connected: new Set(Object.keys(connectedMap)), meds }),
     [connectedMap, meds]
@@ -39,7 +39,7 @@ export default function FamilyHomePage() {
       ? { tone: "warn" as const, label: `${urgentCount} need${urgentCount === 1 ? "s" : ""} attention` }
       : feedScam
         ? { tone: "warn" as const, label: "Worth a look" }
-        : { tone: "ok" as const, label: "Mom is okay" };
+        : { tone: "ok" as const, label: "Dad is okay" };
 
   const newestId = events[0]?.id;
 
@@ -47,7 +47,7 @@ export default function FamilyHomePage() {
     <>
       <AppHeader
         subtitle="Good morning, Maya"
-        title="Mom’s day so far"
+        title="Dad’s day so far"
         right={
           <div
             aria-hidden

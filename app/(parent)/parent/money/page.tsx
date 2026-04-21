@@ -31,6 +31,9 @@ export default function ParentMoneyPage() {
   const prepend = useEventsStore((s) => s.prepend);
   const pushToast = useToastsStore((s) => s.push);
   const [paidIds, setPaidIds] = useState<Set<string>>(new Set());
+  const [pendingBillId, setPendingBillId] = useState<string | null>(null);
+  const [approvedIds, setApprovedIds] = useState<Set<string>>(new Set());
+  const [disputedIds, setDisputedIds] = useState<Set<string>>(new Set());
 
   const flagged = TRANSACTIONS.filter((t) => t.flag === "unusual");
 
@@ -50,6 +53,43 @@ export default function ParentMoneyPage() {
       body: `${bill.biller} · ${formatDollars(bill.amountCents)}.`,
     });
     setPaidIds((s) => new Set(s).add(bill.id));
+    setPendingBillId(null);
+  }
+
+  function approveCharge(txnId: string, merchant: string, amountCents: number) {
+    if (approvedIds.has(txnId) || disputedIds.has(txnId)) return;
+    prepend({
+      id: `charge-approve-${txnId}-${Date.now()}`,
+      variant: "ok",
+      tag: "Financial monitoring",
+      title: "Dad approved a flagged charge",
+      body: `${formatDollars(amountCents)} at ${merchant} — cleared with SafeLife AI.`,
+      time: "Now",
+    });
+    pushToast({
+      tone: "ok",
+      title: "Charge approved",
+      body: `${merchant} · ${formatDollars(amountCents)}.`,
+    });
+    setApprovedIds((s) => new Set(s).add(txnId));
+  }
+
+  function disputeCharge(txnId: string, merchant: string, amountCents: number) {
+    if (approvedIds.has(txnId) || disputedIds.has(txnId)) return;
+    prepend({
+      id: `charge-dispute-${txnId}-${Date.now()}`,
+      variant: "scam",
+      tag: "Financial monitoring",
+      title: "Dad disputed a charge",
+      body: `${formatDollars(amountCents)} at ${merchant} — under review. Chase notified.`,
+      time: "Now",
+    });
+    pushToast({
+      tone: "warn",
+      title: "Dispute filed",
+      body: `${merchant} · we'll follow up when Chase responds.`,
+    });
+    setDisputedIds((s) => new Set(s).add(txnId));
   }
 
   return (
@@ -76,46 +116,71 @@ export default function ParentMoneyPage() {
           <h2 className="px-1 text-[13px] font-bold uppercase tracking-[0.12em] text-muted">
             AI noticed
           </h2>
-          {flagged.map((t) => (
-            <div
-              key={t.id}
-              className="rounded-2xl border border-scam-ink/20 bg-scam-bg p-4"
-            >
-              <div className="flex items-start gap-3">
-                <span
-                  aria-hidden
-                  className="grid h-11 w-11 flex-shrink-0 place-items-center rounded-xl bg-white text-[22px]"
-                >
-                  🚩
-                </span>
-                <div className="flex-1">
-                  <CategoryTag variant="scam">Unusual charge</CategoryTag>
-                  <p className="mt-1 text-[18px] font-extrabold leading-snug text-ink">
-                    {formatDollars(t.amountCents)} at {t.merchant}
-                  </p>
-                  {t.flagNote ? (
-                    <p className="mt-1 text-[14px] leading-snug text-scam-ink">
-                      {t.flagNote}
+          {flagged.map((t) => {
+            const resolved = approvedIds.has(t.id) || disputedIds.has(t.id);
+            const approved = approvedIds.has(t.id);
+            return (
+              <div
+                key={t.id}
+                className="rounded-2xl border border-scam-ink/20 bg-scam-bg p-4"
+              >
+                <div className="flex items-start gap-3">
+                  <span
+                    aria-hidden
+                    className="grid h-11 w-11 flex-shrink-0 place-items-center rounded-xl bg-white text-[22px]"
+                  >
+                    🚩
+                  </span>
+                  <div className="flex-1">
+                    <CategoryTag variant="scam">Unusual charge</CategoryTag>
+                    <p className="mt-1 text-[18px] font-extrabold leading-snug text-ink">
+                      {formatDollars(t.amountCents)} at {t.merchant}
                     </p>
-                  ) : null}
-                  <div className="mt-3 flex flex-wrap gap-2">
-                    <button
-                      type="button"
-                      className="min-h-[44px] rounded-xl bg-ink px-4 py-2 text-[14px] font-bold text-white hover:-translate-y-[1px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
-                    >
-                      Approve
-                    </button>
-                    <button
-                      type="button"
-                      className="min-h-[44px] rounded-xl border border-line bg-white px-4 py-2 text-[14px] font-semibold text-ink-2 hover:bg-panel focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
-                    >
-                      Dispute
-                    </button>
+                    {t.flagNote ? (
+                      <p className="mt-1 text-[14px] leading-snug text-scam-ink">
+                        {t.flagNote}
+                      </p>
+                    ) : null}
+                    {resolved ? (
+                      <div className="mt-3">
+                        <span
+                          className={cn(
+                            "inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[13px] font-bold",
+                            approved
+                              ? "bg-ok-bg text-ok-ink"
+                              : "bg-ride-bg text-ride-ink"
+                          )}
+                        >
+                          {approved ? "✓ Approved" : "⚠ Dispute filed"}
+                        </span>
+                      </div>
+                    ) : (
+                      <div className="mt-3 flex flex-wrap gap-2">
+                        <button
+                          type="button"
+                          onClick={() =>
+                            approveCharge(t.id, t.merchant, t.amountCents)
+                          }
+                          className="min-h-[44px] rounded-xl bg-ink px-4 py-2 text-[14px] font-bold text-white hover:-translate-y-[1px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+                        >
+                          Approve
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() =>
+                            disputeCharge(t.id, t.merchant, t.amountCents)
+                          }
+                          className="min-h-[44px] rounded-xl border border-line bg-white px-4 py-2 text-[14px] font-semibold text-ink-2 hover:bg-panel focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+                        >
+                          Dispute
+                        </button>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </section>
       ) : null}
 
@@ -224,6 +289,7 @@ export default function ParentMoneyPage() {
         </h2>
         {BILLS.map((b) => {
           const isPaid = paidIds.has(b.id);
+          const isPending = pendingBillId === b.id;
           return (
             <article
               key={b.id}
@@ -246,7 +312,9 @@ export default function ParentMoneyPage() {
                 {!b.autoPay ? (
                   <button
                     type="button"
-                    onClick={() => pay(b)}
+                    onClick={() =>
+                      isPending ? pay(b) : setPendingBillId(b.id)
+                    }
                     disabled={isPaid}
                     className={cn(
                       "min-h-[44px] flex-shrink-0 rounded-xl px-4 py-2 text-[14px] font-bold transition-transform focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent",
@@ -255,7 +323,7 @@ export default function ParentMoneyPage() {
                         : "bg-ink text-white hover:-translate-y-[1px]"
                     )}
                   >
-                    {isPaid ? "✓ Paid" : "Pay"}
+                    {isPaid ? "✓ Paid" : isPending ? "Confirm" : "Pay"}
                   </button>
                 ) : (
                   <span className="self-center rounded-full bg-ok-bg px-3 py-1 text-[12px] font-bold text-ok-ink">
@@ -263,6 +331,25 @@ export default function ParentMoneyPage() {
                   </span>
                 )}
               </div>
+
+              {isPending && !isPaid ? (
+                <div className="mt-3 flex items-center justify-between gap-2 rounded-xl bg-chip-blue px-3 py-2.5">
+                  <p className="text-[13px] leading-snug text-ink-2">
+                    Pay{" "}
+                    <span className="font-bold text-ink">
+                      {formatDollars(b.amountCents)}
+                    </span>{" "}
+                    from Checking?
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => setPendingBillId(null)}
+                    className="min-h-[36px] rounded-lg border border-line bg-white px-3 text-[13px] font-semibold text-ink-2 hover:bg-panel focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              ) : null}
             </article>
           );
         })}

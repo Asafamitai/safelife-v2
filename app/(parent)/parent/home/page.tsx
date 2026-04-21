@@ -8,12 +8,16 @@ import { HelpSheet } from "@/components/help-sheet";
 import { MedCard } from "@/components/med-card";
 import { ParentAskSheet } from "@/components/parent-ask-sheet";
 import { VoiceButton } from "@/components/ui/voice-button";
+import { useEventsStore } from "@/lib/store/events";
 import { useMedsStore } from "@/lib/store/meds";
 import { useVoiceSettingsStore } from "@/lib/store/voice-settings";
 import { speak as voiceSpeak } from "@/lib/voice";
 
 export default function ParentHomePage() {
   const meds = useMedsStore((s) => s.meds);
+  const helpEvents = useEventsStore((s) =>
+    s.events.filter((e) => e.id.startsWith("help-"))
+  );
   const allTaken = meds.every((m) => m.takenAt);
   const hydrate = useVoiceSettingsStore((s) => s.hydrate);
   const voiceMode = useVoiceSettingsStore((s) => s.mode);
@@ -87,7 +91,7 @@ export default function ParentHomePage() {
 
       <section
         aria-label="Protection entry"
-        className="px-4 pb-6 pt-3"
+        className="px-4 pb-3 pt-3"
       >
         <Link
           href="/parent/scam"
@@ -104,6 +108,38 @@ export default function ParentHomePage() {
           </span>
         </Link>
       </section>
+
+      {helpEvents.length > 0 ? (
+        <section
+          aria-label="Recent help requests"
+          className="px-4 pb-6 pt-1"
+        >
+          <Link
+            href="/parent/help"
+            className="flex min-h-[64px] items-center gap-3 rounded-2xl border border-line bg-white p-4 transition-transform hover:-translate-y-[1px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+          >
+            <span
+              aria-hidden
+              className="grid h-11 w-11 flex-shrink-0 place-items-center rounded-xl bg-panel text-[22px]"
+            >
+              🕒
+            </span>
+            <span className="flex flex-1 flex-col">
+              <span className="text-[16px] font-bold text-ink">
+                Recent help requests
+              </span>
+              <span className="text-[13px] leading-snug text-ink-2">
+                {helpEvents.length} in the last few days
+              </span>
+            </span>
+            <span aria-hidden className="text-[18px] text-muted">
+              ›
+            </span>
+          </Link>
+        </section>
+      ) : (
+        <div className="pb-6" />
+      )}
     </>
   );
 }
