@@ -6,6 +6,7 @@ import { AiBrainBanner } from "@/components/ai-brain-banner";
 import { AppHeader } from "@/components/app-frame";
 import { ChargeCardActions } from "@/components/charge-card-actions";
 import { FoodOrderedTodayCard } from "@/components/food-ordered-today-card";
+import { SafeZonesCard } from "@/components/safe-zones-card";
 import { DigestCard } from "@/components/digest-card";
 import { FeedCard } from "@/components/feed-card";
 import { StatusPill } from "@/components/status-pill";
@@ -78,6 +79,8 @@ export default function FamilyHomePage() {
       <DigestCard dismissible />
 
       <FoodOrderedTodayCard />
+
+      <SafeZonesCard />
 
       <WeeklyStats />
 
