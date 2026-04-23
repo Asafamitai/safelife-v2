@@ -263,9 +263,10 @@ export default function ParentMoneyPage() {
                     </span>
                   ) : null}
                 </div>
-                {a.kind === "credit" && a.limitCents ? (
+                {a.kind === "credit" &&
+                typeof a.limitCents === "number" ? (
                   <CreditUtilization
-                    account={a}
+                    account={a as Account & { limitCents: number }}
                     editing={editingLimitId === a.id}
                     onEdit={() => setEditingLimitId(a.id)}
                     onCancel={() => setEditingLimitId(null)}
