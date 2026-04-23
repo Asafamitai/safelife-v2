@@ -19,10 +19,14 @@ export interface Account {
   icon: string;
   /** Cents → easier to format without float drift. */
   balanceCents: number;
+  /** For credit accounts: credit limit in cents. */
+  limitCents?: number;
   /** For credit accounts: due date label (e.g. "Wed"). */
   dueLabel?: string;
   /** Short positive signal ("Healthy this week"), shown as a chip. */
   okNote?: string;
+  /** Is this card active (default true). Freeze-card Phase 2 will flip it. */
+  active?: boolean;
 }
 
 export interface Txn {
@@ -71,7 +75,31 @@ export const ACCOUNTS: Account[] = [
     kind: "credit",
     icon: "💳",
     balanceCents: 31_250,
+    limitCents: 1_000_000,
     dueLabel: "Wed",
+    active: true,
+  },
+  {
+    id: "cc-visa",
+    name: "Credit card",
+    institution: "Visa Signature · BoA",
+    kind: "credit",
+    icon: "💳",
+    balanceCents: 128_430,
+    limitCents: 800_000,
+    dueLabel: "in 12 days",
+    active: true,
+  },
+  {
+    id: "cc-amex",
+    name: "Credit card",
+    institution: "Amex Gold",
+    kind: "credit",
+    icon: "💳",
+    balanceCents: 20_488,
+    limitCents: 1_500_000,
+    dueLabel: "in 26 days",
+    active: true,
   },
 ];
 

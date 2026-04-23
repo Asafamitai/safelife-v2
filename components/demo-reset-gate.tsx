@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useDigestStore } from "@/lib/store/digest";
 import { useEventsStore } from "@/lib/store/events";
+import { useFinanceAlertsStore } from "@/lib/store/finance-alerts";
 import { useIntegrationsStore } from "@/lib/store/integrations";
 import { useMedsStore } from "@/lib/store/meds";
 import { useMembersStore } from "@/lib/store/members";
@@ -63,6 +64,7 @@ export function DemoResetGate() {
       useDigestStore.getState().reset();
       useOnboardingStore.getState().reset();
       useVoiceSettingsStore.getState().reset();
+      useFinanceAlertsStore.getState().reset();
       useTourStore.getState().stop();
 
       try {

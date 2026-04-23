@@ -1,16 +1,27 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+} from "@/components/ui/sheet";
 import { AppHeader } from "@/components/app-frame";
 import { CategoryTag } from "@/components/category-tag";
 import { useEventsStore } from "@/lib/store/events";
 import { useToastsStore } from "@/lib/store/toasts";
+import { useFinanceAlertsStore } from "@/lib/store/finance-alerts";
+import type { FinanceAlertRules } from "@/lib/store/finance-alerts";
 import {
   ACCOUNTS,
   BILLS,
   TRANSACTIONS,
   formatDollars,
+  type Account,
   type Bill,
+  type Txn,
 } from "@/lib/mock-finance";
 import { cn } from "@/lib/utils";
 
@@ -34,8 +45,30 @@ export default function ParentMoneyPage() {
   const [pendingBillId, setPendingBillId] = useState<string | null>(null);
   const [approvedIds, setApprovedIds] = useState<Set<string>>(new Set());
   const [disputedIds, setDisputedIds] = useState<Set<string>>(new Set());
+  // Demo-only override so the user can tap "Edit limit" during a pitch.
+  const [limitOverrides, setLimitOverrides] = useState<
+    Record<string, number | undefined>
+  >({});
+  const [editingLimitId, setEditingLimitId] = useState<string | null>(null);
+  const [reviewTxn, setReviewTxn] = useState<Txn | null>(null);
+
+  const accounts = useMemo(
+    () =>
+      ACCOUNTS.map((a) => ({
+        ...a,
+        limitCents: limitOverrides[a.id] ?? a.limitCents,
+      })),
+    [limitOverrides]
+  );
 
   const flagged = TRANSACTIONS.filter((t) => t.flag === "unusual");
+
+  const hydrateAlerts = useFinanceAlertsStore((s) => s.hydrate);
+  const alertRules = useFinanceAlertsStore((s) => s.rules);
+  const setAlertRule = useFinanceAlertsStore((s) => s.set);
+  useEffect(() => {
+    hydrateAlerts();
+  }, [hydrateAlerts]);
 
   function pay(bill: Bill) {
     if (paidIds.has(bill.id)) return;
@@ -158,6 +191,13 @@ export default function ParentMoneyPage() {
                       <div className="mt-3 flex flex-wrap gap-2">
                         <button
                           type="button"
+                          onClick={() => setReviewTxn(t)}
+                          className="min-h-[44px] rounded-xl border border-ink bg-white px-4 py-2 text-[14px] font-bold text-ink hover:-translate-y-[1px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+                        >
+                          Review
+                        </button>
+                        <button
+                          type="button"
                           onClick={() =>
                             approveCharge(t.id, t.merchant, t.amountCents)
                           }
@@ -192,7 +232,7 @@ export default function ParentMoneyPage() {
         <h2 className="px-1 text-[13px] font-bold uppercase tracking-[0.12em] text-muted">
           Balances
         </h2>
-        {ACCOUNTS.map((a) => (
+        {accounts.map((a) => (
           <article
             key={a.id}
             className="rounded-2xl border border-line bg-white p-4"
@@ -223,10 +263,71 @@ export default function ParentMoneyPage() {
                     </span>
                   ) : null}
                 </div>
+                {a.kind === "credit" && a.limitCents ? (
+                  <CreditUtilization
+                    account={a}
+                    editing={editingLimitId === a.id}
+                    onEdit={() => setEditingLimitId(a.id)}
+                    onCancel={() => setEditingLimitId(null)}
+                    onSave={(next) => {
+                      setLimitOverrides((prev) => ({
+                        ...prev,
+                        [a.id]: next,
+                      }));
+                      setEditingLimitId(null);
+                      pushToast({
+                        tone: "ok",
+                        title: "Limit updated",
+                        body: `${a.institution} · ${formatDollars(next)}.`,
+                      });
+                    }}
+                  />
+                ) : null}
               </div>
             </div>
           </article>
         ))}
+      </section>
+
+      {/* ========== Alert rules ========== */}
+      <section
+        aria-label="Alert rules"
+        className="flex flex-col gap-2 px-4 pb-2 pt-4"
+      >
+        <h2 className="px-1 text-[13px] font-bold uppercase tracking-[0.12em] text-muted">
+          Alert me when…
+        </h2>
+        <div className="grid gap-2">
+          <AlertRule
+            rule="anyTransaction"
+            label="Any transaction"
+            body="Ping me for every single card swipe. Loud — off by default."
+            on={alertRules.anyTransaction}
+            onChange={(on) => setAlertRule("anyTransaction", on)}
+          />
+          <AlertRule
+            rule="over100"
+            label="Over $100"
+            body="Flag charges above $100 so I can approve big ones."
+            on={alertRules.over100}
+            onChange={(on) => setAlertRule("over100", on)}
+          />
+          <AlertRule
+            rule="over500"
+            label="Over $500"
+            body="Big-ticket threshold — always on unless you turn it off."
+            on={alertRules.over500}
+            onChange={(on) => setAlertRule("over500", on)}
+          />
+          <AlertRule
+            rule="aiPattern"
+            label="Unusual pattern (AI)"
+            body="SafeLife AI flags anything outside Dad's normal spend."
+            on={alertRules.aiPattern}
+            onChange={(on) => setAlertRule("aiPattern", on)}
+            highlight
+          />
+        </div>
       </section>
 
       {/* ========== Recent activity ========== */}
@@ -447,6 +548,233 @@ export default function ParentMoneyPage() {
           these for you.
         </p>
       </section>
+
+      {/* ========== Transaction detail (review sheet) ========== */}
+      <Sheet
+        open={!!reviewTxn}
+        onOpenChange={(o) => !o && setReviewTxn(null)}
+      >
+        <SheetContent>
+          {reviewTxn ? (
+            <TransactionDetail txn={reviewTxn} />
+          ) : null}
+        </SheetContent>
+      </Sheet>
     </>
+  );
+}
+
+function CreditUtilization({
+  account,
+  editing,
+  onEdit,
+  onCancel,
+  onSave,
+}: {
+  account: Account & { limitCents: number };
+  editing: boolean;
+  onEdit: () => void;
+  onCancel: () => void;
+  onSave: (next: number) => void;
+}) {
+  const [input, setInput] = useState(
+    (account.limitCents / 100).toString()
+  );
+  const pct = Math.min(
+    100,
+    Math.round((account.balanceCents / account.limitCents) * 100)
+  );
+  const tone =
+    pct > 70 ? "bg-scam-ink" : pct > 30 ? "bg-ride-ink" : "bg-ok-ink";
+
+  if (editing) {
+    return (
+      <div className="mt-3 rounded-xl border border-accent/40 bg-white p-3">
+        <label
+          htmlFor={`limit-${account.id}`}
+          className="text-[11px] font-bold uppercase tracking-[0.08em] text-muted"
+        >
+          Credit limit
+        </label>
+        <div className="mt-1 flex items-center gap-2">
+          <span className="text-[14px] font-bold text-ink">$</span>
+          <input
+            id={`limit-${account.id}`}
+            type="number"
+            min={0}
+            step={100}
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            autoFocus
+            className="min-h-[36px] flex-1 rounded-lg border border-line bg-white px-3 text-[14px] font-semibold text-ink focus:border-accent focus:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+          />
+          <button
+            type="button"
+            onClick={() => {
+              const dollars = Number(input);
+              if (!Number.isFinite(dollars) || dollars <= 0) return;
+              onSave(Math.round(dollars * 100));
+            }}
+            className="min-h-[36px] rounded-lg bg-ink px-3 text-[12px] font-bold text-white hover:-translate-y-[1px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+          >
+            Save
+          </button>
+          <button
+            type="button"
+            onClick={onCancel}
+            className="min-h-[36px] rounded-lg border border-line bg-white px-3 text-[12px] font-semibold text-ink-2 hover:bg-panel focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+          >
+            Cancel
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="mt-3">
+      <div className="flex items-center justify-between text-[12px] text-muted">
+        <span>
+          <span className="font-bold text-ink-2">{pct}%</span> of{" "}
+          {formatDollars(account.limitCents)}
+        </span>
+        <button
+          type="button"
+          onClick={onEdit}
+          className="rounded-md px-2 py-1 text-[11px] font-bold text-accent hover:bg-chip-blue focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+        >
+          Edit limit
+        </button>
+      </div>
+      <div
+        aria-hidden
+        className="mt-1 h-1.5 w-full overflow-hidden rounded-full bg-panel"
+      >
+        <div
+          className={cn("h-full", tone)}
+          style={{ width: `${pct}%` }}
+        />
+      </div>
+    </div>
+  );
+}
+
+function AlertRule({
+  rule,
+  label,
+  body,
+  on,
+  onChange,
+  highlight,
+}: {
+  rule: keyof FinanceAlertRules;
+  label: string;
+  body: string;
+  on: boolean;
+  onChange: (on: boolean) => void;
+  highlight?: boolean;
+}) {
+  return (
+    <button
+      type="button"
+      role="switch"
+      aria-checked={on}
+      aria-label={label}
+      onClick={() => onChange(!on)}
+      data-rule={rule}
+      className={cn(
+        "flex min-h-[72px] items-center gap-4 rounded-2xl border bg-white p-4 text-left transition-transform hover:-translate-y-[1px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent",
+        highlight ? "border-accent/40 bg-chip-blue" : "border-line"
+      )}
+    >
+      <span className="flex flex-1 flex-col">
+        <span className="flex items-center gap-2">
+          <span className="text-[15px] font-bold text-ink">{label}</span>
+          {highlight ? (
+            <span className="rounded-full bg-white px-2 py-0.5 text-[10px] font-bold uppercase tracking-[0.08em] text-accent">
+              🧠 SafeLife AI
+            </span>
+          ) : null}
+        </span>
+        <span className="text-[13px] leading-snug text-ink-2">{body}</span>
+      </span>
+      <span
+        aria-hidden
+        className={cn(
+          "relative inline-flex h-7 w-12 flex-shrink-0 rounded-full transition-colors",
+          on ? "bg-ink" : "bg-line"
+        )}
+      >
+        <span
+          className={cn(
+            "absolute top-1 h-5 w-5 rounded-full bg-white shadow transition-transform",
+            on ? "translate-x-6" : "translate-x-1"
+          )}
+        />
+      </span>
+    </button>
+  );
+}
+
+function TransactionDetail({ txn }: { txn: Txn }) {
+  const account = ACCOUNTS.find((a) => a.id === txn.accountId);
+  return (
+    <>
+      <SheetHeader>
+        <SheetTitle>Transaction detail</SheetTitle>
+        <SheetDescription>
+          SafeLife AI flagged this as unusual — here&apos;s the full record.
+        </SheetDescription>
+      </SheetHeader>
+
+      <div className="mt-4 rounded-2xl border border-scam-ink/20 bg-scam-bg p-4">
+        <div className="flex items-start gap-3">
+          <span
+            aria-hidden
+            className="grid h-11 w-11 flex-shrink-0 place-items-center rounded-xl bg-white text-[22px]"
+          >
+            🚩
+          </span>
+          <div className="flex-1">
+            <CategoryTag variant="scam">Unusual charge</CategoryTag>
+            <p className="mt-1 text-[20px] font-extrabold leading-snug text-ink">
+              {formatDollars(txn.amountCents)} at {txn.merchant}
+            </p>
+            {txn.flagNote ? (
+              <p className="mt-1 text-[14px] leading-snug text-scam-ink">
+                {txn.flagNote}
+              </p>
+            ) : null}
+          </div>
+        </div>
+      </div>
+
+      <dl className="mt-4 grid grid-cols-2 gap-3 rounded-2xl border border-line bg-white p-4 text-[13px]">
+        <Field label="Merchant" value={txn.merchant} />
+        <Field label="Amount" value={formatDollars(txn.amountCents)} />
+        <Field
+          label="Card"
+          value={account ? account.institution : "—"}
+        />
+        <Field label="Date" value={txn.dateLabel} />
+        <div className="col-span-2">
+          <dt className="text-[11px] font-bold uppercase tracking-[0.08em] text-muted">
+            Category
+          </dt>
+          <dd className="mt-0.5 font-semibold text-ink">Online shopping</dd>
+        </div>
+      </dl>
+    </>
+  );
+}
+
+function Field({ label, value }: { label: string; value: string }) {
+  return (
+    <div>
+      <dt className="text-[11px] font-bold uppercase tracking-[0.08em] text-muted">
+        {label}
+      </dt>
+      <dd className="mt-0.5 font-semibold text-ink">{value}</dd>
+    </div>
   );
 }

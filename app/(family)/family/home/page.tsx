@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useMemo } from "react";
 import { AiBrainBanner } from "@/components/ai-brain-banner";
 import { AppHeader } from "@/components/app-frame";
+import { ChargeCardActions } from "@/components/charge-card-actions";
 import { FoodOrderedTodayCard } from "@/components/food-ordered-today-card";
 import { DigestCard } from "@/components/digest-card";
 import { FeedCard } from "@/components/feed-card";
@@ -120,7 +121,13 @@ export default function FamilyHomePage() {
               body={e.body}
               time={e.time}
               icon={<span aria-hidden>{iconForVariant(e.variant)}</span>}
-              actions={e.variant === "scam" ? <ScamCardActions event={e} /> : null}
+              actions={
+                e.variant === "scam"
+                  ? e.tag === "Financial monitoring"
+                    ? <ChargeCardActions event={e} />
+                    : <ScamCardActions event={e} />
+                  : null
+              }
             />
           </div>
         ))}
