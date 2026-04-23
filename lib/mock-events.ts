@@ -80,4 +80,12 @@ export const MOCK_EVENTS: MockEvent[] = [
     body: "Pickup at Dr. Levi's clinic in 12 min. Cost covered by you.",
     time: "11:24",
   },
+  {
+    id: "help-food-seed",
+    variant: "family",
+    tag: "Task completed",
+    title: "Dad ordered lunch",
+    body: "Luigi's Pizza · Uber Eats · $27.40 · ETA 25 min.",
+    time: "11:48",
+  },
 ];

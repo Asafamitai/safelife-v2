@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 import { AppHeader } from "@/components/app-frame";
 import { useMembersStore, type Member } from "@/lib/store/members";
@@ -65,6 +66,22 @@ export default function FamilyMembersPage() {
         Everyone connected to this family. The parent is at the top, caregivers
         below.
       </p>
+
+      <Link
+        href="/onboarding/connect/"
+        className="mx-4 mb-3 flex items-center gap-3 rounded-2xl border border-accent/30 bg-chip-blue p-4 transition-transform hover:-translate-y-[1px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+      >
+        <span aria-hidden className="text-[22px]">🔗</span>
+        <span className="flex flex-1 flex-col">
+          <span className="text-[14px] font-bold text-ink">
+            Invite a family member
+          </span>
+          <span className="text-[12px] leading-snug text-ink-2">
+            Generate a link so they can open their own side of SafeLife.
+          </span>
+        </span>
+        <span aria-hidden className="text-accent text-lg">→</span>
+      </Link>
 
       <section className="flex flex-1 flex-col gap-3 px-4 pb-3">
         {members.map((m) => (

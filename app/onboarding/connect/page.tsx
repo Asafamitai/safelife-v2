@@ -102,6 +102,11 @@ function ConnectInner() {
             ? "You're being added to a SafeLife family. Tap Continue to finish."
             : "SafeLife works best when both sides are set up. Share this link so the other person can open their side in another browser."}
         </p>
+        {!urlInvite ? (
+          <p className="text-[13px] font-semibold text-accent">
+            Optional — you can always invite them later from Settings.
+          </p>
+        ) : null}
       </div>
 
       {urlInvite ? (
@@ -155,6 +160,15 @@ function ConnectInner() {
         >
           Continue
         </button>
+        {!urlInvite ? (
+          <button
+            type="button"
+            onClick={finish}
+            className="flex min-h-[48px] w-full items-center justify-center rounded-2xl border border-line bg-white px-5 text-[15px] font-semibold text-ink-2 hover:bg-panel focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+          >
+            I’ll do this later
+          </button>
+        ) : null}
       </div>
     </section>
   );

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useMemo } from "react";
 import { AiBrainBanner } from "@/components/ai-brain-banner";
 import { AppHeader } from "@/components/app-frame";
+import { FoodOrderedTodayCard } from "@/components/food-ordered-today-card";
 import { DigestCard } from "@/components/digest-card";
 import { FeedCard } from "@/components/feed-card";
 import { StatusPill } from "@/components/status-pill";
@@ -74,6 +75,8 @@ export default function FamilyHomePage() {
       />
 
       <DigestCard dismissible />
+
+      <FoodOrderedTodayCard />
 
       <WeeklyStats />
 

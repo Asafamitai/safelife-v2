@@ -6,6 +6,7 @@ import { AiBrainBanner } from "@/components/ai-brain-banner";
 import { AppHeader } from "@/components/app-frame";
 import { HelpSheet } from "@/components/help-sheet";
 import { MedCard } from "@/components/med-card";
+import { OrderFoodButton } from "@/components/order-food-button";
 import { ParentAskSheet } from "@/components/parent-ask-sheet";
 import { VoiceButton } from "@/components/ui/voice-button";
 import { useEventsStore } from "@/lib/store/events";
@@ -72,6 +73,7 @@ export default function ParentHomePage() {
       >
         <HelpSheet />
         <ParentAskSheet />
+        <OrderFoodButton />
       </section>
 
       <section
