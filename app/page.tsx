@@ -2,6 +2,7 @@ import Link from "next/link";
 import { PhoneFrame } from "@/components/phone-frame";
 import { DemoSheet } from "@/components/demo-sheet";
 import { DemoResetGate } from "@/components/demo-reset-gate";
+import { WaitlistForm } from "@/components/waitlist-form";
 
 export default function LandingPage() {
   return (
@@ -42,6 +43,12 @@ export default function LandingPage() {
                   </button>
                 }
               />
+              <Link
+                href="#waitlist"
+                className="w-full sm:w-auto rounded-[14px] border border-ink bg-white px-6 py-3.5 text-center text-[15px] font-semibold text-ink transition-all hover:-translate-y-[1px] hover:bg-panel active:translate-y-0 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
+              >
+                Join the waitlist
+              </Link>
               <Link
                 href="/family/home"
                 className="w-full sm:w-auto rounded-[14px] border border-ink bg-white px-6 py-3.5 text-center text-[15px] font-semibold text-ink transition-all hover:-translate-y-[1px] hover:bg-panel active:translate-y-0 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
@@ -473,6 +480,30 @@ export default function LandingPage() {
                 You don’t have to monitor everything — just what matters.
               </p>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ======================================================================
+          WAITLIST
+         ====================================================================== */}
+      <section id="waitlist" className="border-t border-line bg-white px-6 py-24">
+        <div className="mx-auto grid max-w-[1080px] gap-10 lg:grid-cols-[1.1fr_1fr] lg:items-center">
+          <div>
+            <span className="inline-block rounded-full bg-chip-blue px-3.5 py-1.5 text-[13px] font-semibold tracking-[0.02em] text-accent">
+              Early access
+            </span>
+            <h2 className="mt-5 text-balance text-[34px] font-extrabold leading-[1.1] tracking-tight text-ink lg:text-[44px]">
+              Be first when SafeLife opens up.
+            </h2>
+            <p className="mt-4 max-w-[520px] text-[17px] leading-[1.55] text-ink-2">
+              We&apos;re rolling out slowly to make sure it works for every family.
+              Join the list and we&apos;ll reach out when there&apos;s a spot —
+              no spam, no marketing funnel.
+            </p>
+          </div>
+          <div className="rounded-2xl border border-line bg-off-white p-6 shadow-card lg:p-7">
+            <WaitlistForm variant="light" />
           </div>
         </div>
       </section>
