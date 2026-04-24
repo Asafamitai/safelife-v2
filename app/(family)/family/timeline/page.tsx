@@ -5,6 +5,7 @@ import { AppHeader } from "@/components/app-frame";
 import { DigestCard } from "@/components/digest-card";
 import { EmptyState } from "@/components/empty-state";
 import { FeedCard } from "@/components/feed-card";
+import { WeeklyStats } from "@/components/weekly-stats";
 import {
   TimelineFilterBar,
   useActiveFilters,
@@ -30,6 +31,7 @@ export default function FamilyTimelinePage() {
     <>
       <AppHeader subtitle="This week" title="Timeline" />
       <DigestCard />
+      <WeeklyStats />
       <Suspense fallback={null}>
         <FilteredTimeline />
       </Suspense>

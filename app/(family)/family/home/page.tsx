@@ -5,7 +5,6 @@ import { useMemo } from "react";
 import { AiBrainBanner } from "@/components/ai-brain-banner";
 import { AppHeader } from "@/components/app-frame";
 import { ChargeCardActions } from "@/components/charge-card-actions";
-import { FoodOrderedTodayCard } from "@/components/food-ordered-today-card";
 import { SafeZonesCard } from "@/components/safe-zones-card";
 import { DigestCard } from "@/components/digest-card";
 import { FeedCard } from "@/components/feed-card";
@@ -13,7 +12,6 @@ import { StatusPill } from "@/components/status-pill";
 import { CheckMessageSheet } from "@/components/check-message-sheet";
 import { ScamCardActions } from "@/components/scam-card-actions";
 import { TourBanner } from "@/components/tour-banner";
-import { WeeklyStats } from "@/components/weekly-stats";
 import { useEventsStore } from "@/lib/store/events";
 import { iconForVariant } from "@/lib/mock-events";
 import { useIntegrationsStore } from "@/lib/store/integrations";
@@ -78,11 +76,7 @@ export default function FamilyHomePage() {
 
       <DigestCard dismissible />
 
-      <FoodOrderedTodayCard />
-
       <SafeZonesCard />
-
-      <WeeklyStats />
 
       <Link
         href="/family/ask"
